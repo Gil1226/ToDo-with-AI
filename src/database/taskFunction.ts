@@ -11,6 +11,15 @@ export function fetchTask() {
     return convertTasks
 }
 
+type CategoryRow = {
+  category: string;
+};
+
+export function distinctCategory() {
+    const categories = db.getAllSync<CategoryRow>(`SELECT DISTINCT category FROM tasks`);
+    return categories.map(category => category.category);
+}
+
 export function createTask(title:string, time:string, date:string, category:string) {
     db.runSync(`INSERT INTO tasks (title, time, date, category) 
                 VALUES (?, ?, ?, ?)`, title, time, date, category
