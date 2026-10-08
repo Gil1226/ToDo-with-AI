@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { ScrollView, View, Pressable, Text, StyleSheet } from "react-native";
 import { colors } from "@/styles/colors";
+import { distinctCategory } from "@/database/taskFunction"
 
 export default function Category() {
-    const categories = ["All", "Work", "Personal", "Errands", "School"];
+    const fetchedCategories = distinctCategory();
+
+    const categories = ["All", ...fetchedCategories];
     const [selected, setSelected] = useState("All")
 
     const select = (category:string) => {

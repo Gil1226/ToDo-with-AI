@@ -1,67 +1,66 @@
 import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { commonStyles } from "@/styles/common";
+import { useState } from "react";
+import {getTodayDate} from "@/utility/date";
+import { createTask } from "@/database/taskFunction";
+import Title from "@/components/taskWork/createTaskComponent/Title";
+import Time from "@/components/taskWork/createTaskComponent/Time";
+import DateField from "@/components/taskWork/createTaskComponent/Date";
+import Category from "@/components/taskWork/createTaskComponent/Category";
 
-export function CreateTaskForm() {
-  return (
-    <View style={styles.overlay}>
-        <View style={styles.form}>
-            <View style={[styles.header, commonStyles.flexBetween]}>
-                <Text style={styles.title}>New task</Text>
+type CreateTaskFormProps = {
+    setTasks: React.Dispatch<React.SetStateAction<any[]>>;
+    setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-                <Pressable>
-                    <Ionicons name="close" size={22} color="#8B9A6E" />
-                </Pressable>
-            </View>
+export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFormProps) {
+    const [formData, setFormData] = useState({
+        title: "",
+        time: "",
+        date: getTodayDate(),
+        category: "",
+    });
 
-            <View style={styles.inputContainer}>
-                <Ionicons name="pencil-outline" size={19} color="#8B9A6E" />
+    const updateForm = (field: string, value: string) => {
+        setFormData({
+            ...formData,
+            [field]: value
+        });
+    }
+    
+    const [showTimePicker, setShowTimePicker] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showCategoryPicker, setShowCategoryPicker] = useState(false);
 
-                <TextInput
-                    placeholder="Task title"
-                    placeholderTextColor="#888"
-                    style={styles.input}
-                />
-            </View>
+    return (
+        <View style={styles.overlay}>
+            <View style={styles.form}>
+                <View style={[styles.header, commonStyles.flexBetween]}>
+                    <Text style={styles.title}>New task</Text>
 
-            <Pressable style={styles.row}>
-                <Ionicons name="time-outline" size={20} color="#8B9A6E" />
-
-                <Text style={styles.label}>Time</Text>
-
-                <Text style={styles.value}>21:00</Text>
-
-                <Ionicons name="chevron-forward" size={18} color="#999" />
-            </Pressable>
-
-            <Pressable style={styles.row}>
-                <Ionicons name="calendar-outline" size={20} color="#8B9A6E" />
-
-                <Text style={styles.label}>Date</Text>
-
-                <Text style={styles.value}>Today</Text>
-
-                <Ionicons name="chevron-forward" size={18} color="#999" />
-            </Pressable>
-
-            <Pressable style={styles.row}>
-                <Ionicons name="pricetag-outline" size={20} color="#8B9A6E" />
-
-                <Text style={styles.label}>Category</Text>
-
-                <View style={styles.category}>
-                    <Text style={styles.categoryText}>Personal</Text>
+                    <Pressable onPress={() => setShowCreateTaskForm(false)}>
+                        <Ionicons name="close" size={22} color="#8B9A6E" />
+                    </Pressable>
                 </View>
 
-                <Ionicons name="chevron-forward" size={18} color="#999" />
-            </Pressable>
-
-            <Pressable style={styles.saveButton}>
-                <Text style={styles.saveText}>Save task</Text>
-            </Pressable>
+                <Title formData={formData} updateForm={updateForm} />
+                <Time formData={formData} updateForm={updateForm} showTimePicker={showTimePicker} setShowTimePicker={setShowTimePicker} />
+                <DateField formData={formData} updateForm={updateForm} showDatePicker={showDatePicker} setShowDatePicker={setShowDatePicker} />
+                <Category formData={formData} updateForm={updateForm} showCategoryPicker={showCategoryPicker} setShowCategoryPicker={setShowCategoryPicker} />
+                
+                <Pressable style={styles.saveButton}
+                            onPress={() => {
+                                createTask(formData.title, formData.time, formData.date, formData.category);
+                                setTasks(prevTasks => [...prevTasks, formData]);
+                                setShowCreateTaskForm(false);
+                            }}
+                >
+                    <Text style={styles.saveText}>Save task</Text>
+                </Pressable>
+            </View>
         </View>
-    </View>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
@@ -98,73 +97,11 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         color: "#222",
     },
-    inputContainer: {
-        height: 40,
-
-        flexDirection: "row",
-        alignItems: "center",
-
-        backgroundColor: "#FFFFFF",
-
-        borderWidth: 1,
-        borderColor: "#DED8CC",
-
-        paddingHorizontal: 14,
-    },
-    input: {
-        flex: 1,
-        marginLeft: 12,
-
-        fontSize: 14,
-        color: "#222",
-    },
-    row: {
-        height: 40,
-
-        flexDirection: "row",
-        alignItems: "center",
-
-        backgroundColor: "#FFFFFF",
-
-        borderWidth: 1,
-        borderColor: "#E5DED2",
-
-        paddingHorizontal: 14,
-    },
-    label: {
-        marginLeft: 12,
-
-        fontSize: 14,
-        color: "#222",
-    },
-    value: {
-        marginLeft: "auto",
-        fontSize: 13,
-        color: "#777",
-        marginRight: 10,
-    },
-    category: {
-        marginLeft: "auto",
-        marginRight: 5,
-        backgroundColor: "#8B9A6E",
-        paddingHorizontal: 10,
-        paddingVertical: 3,
-        borderRadius: 10,
-    },
-    categoryText: {
-        color: "white",
-        fontSize: 11,
-        fontWeight: "600",
-    },
     saveButton: {
-        height: 38,
-
+        height: 38,  
         marginTop: 12,
-
         borderRadius: 12,
-
         backgroundColor: "#8B9A6E",
-
         justifyContent: "center",
         alignItems: "center",
     },
