@@ -2,7 +2,7 @@ import { db } from "./database";
 import { Task } from "@/types/taskType";
 
 export function fetchTask() {
-    const tasks = db.getAllSync<Task>(`SELECT * FROM tasks ORDER BY id DESC`);
+    const tasks = db.getAllSync<Task>(`SELECT * FROM tasks ORDER BY date ASC, time ASC Limit 5`);
 
     const convertTasks = tasks.map(task => ({
         ...task,

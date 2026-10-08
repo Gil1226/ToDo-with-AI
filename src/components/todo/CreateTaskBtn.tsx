@@ -2,10 +2,14 @@ import { colors } from "@/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, View } from "react-native";
 
-export default function CreateTasksBtn() {
+type CreateTasksBtnProps = {
+  setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function CreateTasksBtn({ setShowCreateTaskForm }: CreateTasksBtnProps) {
   return (
     <View style={style.container}>
-      <Pressable style={style.roundBackground}>
+      <Pressable style={style.roundBackground} onPress={() => setShowCreateTaskForm(true)}>
         <Ionicons name="add" style={style.addDesign}></Ionicons>
       </Pressable>
     </View>

@@ -3,13 +3,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { commonStyles } from "@/styles/common";
 import { useState } from "react";
 import {getTodayDate} from "@/utility/date";
-import {distinctCategory} from "@/database/taskFunction";
+import { createTask } from "@/database/taskFunction";
 import Title from "@/components/taskWork/createTaskComponent/Title";
 import Time from "@/components/taskWork/createTaskComponent/Time";
 import DateField from "@/components/taskWork/createTaskComponent/Date";
 import Category from "@/components/taskWork/createTaskComponent/Category";
 
-export function CreateTaskForm() {
+type CreateTaskFormProps = {
+    setTasks: React.Dispatch<React.SetStateAction<any[]>>;
+    setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFormProps) {
     const [formData, setFormData] = useState({
         title: "",
         time: "",
@@ -34,7 +39,7 @@ export function CreateTaskForm() {
                 <View style={[styles.header, commonStyles.flexBetween]}>
                     <Text style={styles.title}>New task</Text>
 
-                    <Pressable>
+                    <Pressable onPress={() => setShowCreateTaskForm(false)}>
                         <Ionicons name="close" size={22} color="#8B9A6E" />
                     </Pressable>
                 </View>
@@ -46,7 +51,9 @@ export function CreateTaskForm() {
                 
                 <Pressable style={styles.saveButton}
                             onPress={() => {
-                                console.log("Form data:", formData);
+                                createTask(formData.title, formData.time, formData.date, formData.category);
+                                setTasks(prevTasks => [...prevTasks, formData]);
+                                setShowCreateTaskForm(false);
                             }}
                 >
                     <Text style={styles.saveText}>Save task</Text>
@@ -91,14 +98,10 @@ const styles = StyleSheet.create({
         color: "#222",
     },
     saveButton: {
-        height: 38,
-
+        height: 38,  
         marginTop: 12,
-
         borderRadius: 12,
-
         backgroundColor: "#8B9A6E",
-
         justifyContent: "center",
         alignItems: "center",
     },

@@ -6,6 +6,7 @@ import { useContext, createContext, useEffect, useState } from "react"
 type  taskContextType = {
     tasks: Task[];
     updateTask: () => Promise<void>;
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 };
 
 const TaskContext = createContext<taskContextType | null>(null);
@@ -23,7 +24,7 @@ export function TaskProvider({ children }: {children: React.ReactNode}){
     }, [])
 
     return(
-        <TaskContext.Provider value={{tasks, updateTask}}>
+        <TaskContext.Provider value={{tasks, updateTask, setTasks}}>
             {children}
         </TaskContext.Provider>
     )

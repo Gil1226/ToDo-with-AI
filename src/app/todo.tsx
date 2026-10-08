@@ -5,8 +5,12 @@ import UpcomingTodo from '@/components/todo/Upcoming';
 import CreateTasksBtn from '@/components/todo/CreateTaskBtn';
 import { commonStyles } from '@/styles/common';
 import { CreateTaskForm } from '@/components/taskWork/CreateTaskForm';
+import { useTasks } from '@/context/taskContext';
+import { useState } from 'react';
 
 export default function todo() {
+  const { setTasks } = useTasks();
+  const [showCreateTaskForm, setShowCreateTaskForm] = useState(false);
   return (
     <View style={commonStyles.container}>
       <ScrollView >
@@ -14,8 +18,11 @@ export default function todo() {
             <TodayTodo/>
             <UpcomingTodo/>
       </ScrollView>
-      <CreateTasksBtn/>
-      <CreateTaskForm/>
+      <CreateTasksBtn setShowCreateTaskForm={setShowCreateTaskForm}/>
+      {showCreateTaskForm && (
+        <CreateTaskForm setTasks={setTasks} setShowCreateTaskForm={setShowCreateTaskForm}/>
+      )}
+      
 
     </View>
   );
