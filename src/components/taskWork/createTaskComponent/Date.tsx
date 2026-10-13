@@ -18,8 +18,9 @@ export default function DateField({ formData, updateForm, showDatePicker, setSho
     const handleDateChange = (event: any, selectedDate: Date | undefined) => {
         setShowDatePicker(false);
         if (selectedDate) {
-            const formattedDate = selectedDate.toLocaleDateString("en-US");
-            updateForm("date", formattedDate);
+            const [month, day, year] = formData.date.split("/");
+            const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+            updateForm("date", selectedDate.toLocaleDateString("en-US"));
             console.log("Selected date:", formattedDate, "Today date:", getTodayDate());
         }
     }

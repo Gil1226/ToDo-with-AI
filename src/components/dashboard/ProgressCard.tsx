@@ -7,16 +7,16 @@ import { getTodayDate } from "@/utility/date";
 import { colors } from "@/styles/colors";
 
 type tasks = {
-  tasks: Task[];
+  todayTasks: Task[];
 }
 
-export default function ProgressCard({tasks}: tasks) {
+export default function ProgressCard({todayTasks}: tasks) {
   const [showOverall, setShowOverall] = useState(false);
 
-  const todayTasksList = tasks.filter(task => task.date === getTodayDate()); 
+  const todayTasksList = todayTasks.filter(task => task.date === getTodayDate()); 
   const todayCompleted = todayTasksList.filter(task => task.completed)
 
-  const overallTasksList = tasks.filter(task => task.date > getTodayDate() || task.date === getTodayDate());
+  const overallTasksList = todayTasks.filter(task => task.date > getTodayDate() || task.date === getTodayDate());
   const overallCompleted = overallTasksList.filter(task => task.completed)
 
   return (  

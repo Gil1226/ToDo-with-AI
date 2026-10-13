@@ -43,11 +43,15 @@ export const commonStyles = StyleSheet.create({
 });
 
 export const todo = StyleSheet.create({
-  headerLayout: {
-        borderColor: colors.secondary,
-        borderBottomWidth: 1,
-        paddingVertical: 10,
-        fontSize: 15
+    headerLayout: {
+      borderColor: colors.secondary,
+      borderBottomWidth: 1,
+      paddingVertical: 10,   
+    },
+    sellAllText: {
+      fontSize: 10,
+      fontWeight: "600",
+      color: colors.fontLight,
     },
     taskSeparator: {
         paddingBottom: 20,

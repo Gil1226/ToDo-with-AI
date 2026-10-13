@@ -8,6 +8,8 @@ import Title from "@/components/taskWork/createTaskComponent/Title";
 import Time from "@/components/taskWork/createTaskComponent/Time";
 import DateField from "@/components/taskWork/createTaskComponent/Date";
 import Category from "@/components/taskWork/createTaskComponent/Category";
+import { Alert } from "react-native";
+import { Task } from "@/types/taskType";
 
 type CreateTaskFormProps = {
     setTasks: React.Dispatch<React.SetStateAction<any[]>>;
@@ -16,6 +18,7 @@ type CreateTaskFormProps = {
 
 export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFormProps) {
     const [formData, setFormData] = useState({
+        id: Date.now(),
         title: "",
         time: "",
         date: getTodayDate(),
@@ -32,6 +35,47 @@ export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFo
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showCategoryPicker, setShowCategoryPicker] = useState(false);
+
+    const handleSaveTask = () => {
+        if (!formData.title.trim()) {
+            Alert.alert(
+                "Missing Title",
+                "Please enter a task title."
+            );
+            return;
+        }
+        if (!formData.time.trim()) {
+            Alert.alert(
+                "Missing Time",
+                "Please enter a task time."
+            );
+            return;
+        }
+        if (!formData.category.trim()) {
+            Alert.alert(
+                "Missing Category",
+                "Please enter a task category."
+            );
+            return;
+        }
+        const [month, day, year] = formData.date.split("/");
+        const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        createTask(formData.title, formData.time, formattedDate, formData.category);
+        
+        const newTask: Task = {
+            id: Date.now(),
+            title: formData.title,
+            time: formData.time,
+            date: formattedDate,
+            category: formData.category,
+            completed: false,
+
+        };
+
+        setTasks(prevTasks => [newTask, ...prevTasks]);
+        setShowCreateTaskForm(false);
+        console.log("Task created:", formData);
+    }
 
     return (
         <View style={styles.overlay}>
@@ -50,11 +94,7 @@ export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFo
                 <Category formData={formData} updateForm={updateForm} showCategoryPicker={showCategoryPicker} setShowCategoryPicker={setShowCategoryPicker} />
                 
                 <Pressable style={styles.saveButton}
-                            onPress={() => {
-                                createTask(formData.title, formData.time, formData.date, formData.category);
-                                setTasks(prevTasks => [...prevTasks, formData]);
-                                setShowCreateTaskForm(false);
-                            }}
+                            onPress={handleSaveTask}
                 >
                     <Text style={styles.saveText}>Save task</Text>
                 </Pressable>

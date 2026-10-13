@@ -3,16 +3,18 @@ import { updateCompleted } from "@/database/taskFunction";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Task } from "../../types/taskType";
+import { formatMDY } from "@/utility/date";
 
 export function TaskCard({
   id,
   title,
   time,
+  date,
   category,
   completed = false,
 }: Task) {
-  const { tasks, updateTask } = useTasks();
-  const task = tasks.find((task) => task.id === id);
+  const { todayTasks, updateTodayTask } = useTasks();
+  const task = todayTasks.find((task) => task.id === id);
 
   const isCompleted = task?.completed;
 
@@ -20,7 +22,7 @@ export function TaskCard({
     const realtimeValue = !isCompleted;
 
     updateCompleted(id, realtimeValue);
-    updateTask();
+    updateTodayTask();
   };
   return (
     <View style={styles.wholeContainer}>
@@ -49,7 +51,7 @@ export function TaskCard({
               isCompleted ? styles.timeCompleted : styles.timeIncomplete,
             ]}
           >
-            {time}
+            {time} - {formatMDY(date)}
           </Text>
           <View
             style={[

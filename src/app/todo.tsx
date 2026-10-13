@@ -9,7 +9,7 @@ import { useTasks } from '@/context/taskContext';
 import { useState } from 'react';
 
 export default function todo() {
-  const { setTasks } = useTasks();
+  const { setTodayTasks } = useTasks();
   const [showCreateTaskForm, setShowCreateTaskForm] = useState(false);
   return (
     <View style={commonStyles.container}>
@@ -18,9 +18,12 @@ export default function todo() {
             <TodayTodo/>
             <UpcomingTodo/>
       </ScrollView>
-      <CreateTasksBtn setShowCreateTaskForm={setShowCreateTaskForm}/>
+      {!showCreateTaskForm && (
+        <CreateTasksBtn setShowCreateTaskForm={setShowCreateTaskForm}/>
+      )}
+      
       {showCreateTaskForm && (
-        <CreateTaskForm setTasks={setTasks} setShowCreateTaskForm={setShowCreateTaskForm}/>
+        <CreateTaskForm setTasks={setTodayTasks} setShowCreateTaskForm={setShowCreateTaskForm}/>
       )}
       
 
