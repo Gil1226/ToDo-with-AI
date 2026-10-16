@@ -23,14 +23,6 @@ export default function TabLayout() {
           screenOptions={{
             headerShown: true,
 
-            headerLargeTitle: true,
-
-            headerLargeTitleStyle: {
-              fontSize: 34,
-              fontWeight: "800",
-              color: "#8B9A6E",
-            },
-
             headerTitleStyle: {
               fontSize: 17,
               fontWeight: "700",

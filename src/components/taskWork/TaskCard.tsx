@@ -13,16 +13,21 @@ export function TaskCard({
   category,
   completed = false,
 }: Task) {
-  const { todayTasks, updateTodayTask } = useTasks();
-  const task = todayTasks.find((task) => task.id === id);
+  const { todayTasks, updateTodayTask, updateUpcomingTask, upcomingTasks } = useTasks();
+  const task =  todayTasks.find(task => task.id === id) ?? upcomingTasks.find(task => task.id === id);
 
   const isCompleted = task?.completed;
 
-  const markDone = async () => {
+  const markDone = async() => {
     const realtimeValue = !isCompleted;
-
     updateCompleted(id, realtimeValue);
-    updateTodayTask();
+    
+    if (todayTasks.some(task => task.id === id)) {
+        await updateTodayTask();
+    } else {
+        await updateUpcomingTask();
+    }
+
   };
   return (
     <View style={styles.wholeContainer}>

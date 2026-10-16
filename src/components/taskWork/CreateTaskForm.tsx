@@ -9,16 +9,16 @@ import Time from "@/components/taskWork/createTaskComponent/Time";
 import DateField from "@/components/taskWork/createTaskComponent/Date";
 import Category from "@/components/taskWork/createTaskComponent/Category";
 import { Alert } from "react-native";
-import { Task } from "@/types/taskType";
+import { useTasks } from "@/context/taskContext";
 
 type CreateTaskFormProps = {
-    setTasks: React.Dispatch<React.SetStateAction<any[]>>;
     setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFormProps) {
+export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
+    const {updateTodayTask, updateUpcomingTask} = useTasks()
+
     const [formData, setFormData] = useState({
-        id: Date.now(),
         title: "",
         time: "",
         date: getTodayDate(),
@@ -61,20 +61,9 @@ export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFo
         const [month, day, year] = formData.date.split("/");
         const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
         createTask(formData.title, formData.time, formattedDate, formData.category);
-        
-        const newTask: Task = {
-            id: Date.now(),
-            title: formData.title,
-            time: formData.time,
-            date: formattedDate,
-            category: formData.category,
-            completed: false,
-
-        };
-
-        setTasks(prevTasks => [newTask, ...prevTasks]);
+        updateTodayTask()
+        updateUpcomingTask()
         setShowCreateTaskForm(false);
-        console.log("Task created:", formData);
     }
 
     return (
@@ -82,7 +71,6 @@ export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFo
             <View style={styles.form}>
                 <View style={[styles.header, commonStyles.flexBetween]}>
                     <Text style={styles.title}>New task</Text>
-
                     <Pressable onPress={() => setShowCreateTaskForm(false)}>
                         <Ionicons name="close" size={22} color="#8B9A6E" />
                     </Pressable>
@@ -92,11 +80,10 @@ export function CreateTaskForm({ setTasks, setShowCreateTaskForm }: CreateTaskFo
                 <Time formData={formData} updateForm={updateForm} showTimePicker={showTimePicker} setShowTimePicker={setShowTimePicker} />
                 <DateField formData={formData} updateForm={updateForm} showDatePicker={showDatePicker} setShowDatePicker={setShowDatePicker} />
                 <Category formData={formData} updateForm={updateForm} showCategoryPicker={showCategoryPicker} setShowCategoryPicker={setShowCategoryPicker} />
-                
                 <Pressable style={styles.saveButton}
                             onPress={handleSaveTask}
                 >
-                    <Text style={styles.saveText}>Save task</Text>
+                    <Text style={styles.saveText}>Save task</Text>  
                 </Pressable>
             </View>
         </View>
@@ -110,10 +97,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-
         justifyContent: "center",
         alignItems: "center",
-
         backgroundColor: "rgba(0, 0, 0, 0.15)",
     },
 
@@ -128,7 +113,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-
         paddingHorizontal: 4,
         paddingBottom: 8,
     },

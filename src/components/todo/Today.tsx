@@ -8,12 +8,10 @@ import { useTasks } from "@/context/taskContext";
 export default function TodayTodo() {
   const{ todayTasks } = useTasks();
 
-  const [showAll, setShowAll] = useState(false)
-  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [showAllToday, setShowAllToday] = useState(false)
 
   const seeAllHandler = () => {
-    setAllTasks(todayTasks)
-    setShowAll(true)
+    setShowAllToday(true)
   };
 
   return (
@@ -30,21 +28,21 @@ export default function TodayTodo() {
           </Pressable>
         </View>  
           <View>  
-            <TaskList type="today"/>
+            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks.slice(0,5)}/>
           </View>
       </ScrollView>
 
-      <Modal visible={showAll} onRequestClose={() => setShowAll(false)} animationType="slide">
+      <Modal visible={showAllToday} onRequestClose={() => setShowAllToday(false)} animationType="slide">
         <View style={style.modalContainer}>
           <View style={commonStyles.cardHeaderLayout}>
             <Text>All Tasks</Text>
 
-            <Pressable onPress={() => setShowAll(false)}>
+            <Pressable onPress={() => setShowAllToday(false)}>
               <Text>Close</Text>
             </Pressable>
           </View>
           <ScrollView>
-            <TaskList type="today" showAll={showAll} setShowAll={setShowAll}  allTask={allTasks}/>
+            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks}/>
           </ScrollView>
         </View>
       </Modal>

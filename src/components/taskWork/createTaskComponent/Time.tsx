@@ -17,7 +17,9 @@ export default function Time({formData, updateForm, showTimePicker, setShowTimeP
     const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
         setShowTimePicker(false);
         if (selectedTime) {
-            updateForm("time", selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            const hh = String(selectedTime.getHours()).padStart(2, "0");
+            const mm = String(selectedTime.getMinutes()).padStart(2, "0");
+            updateForm("time", `${hh}:${mm}`);
         }
     };
     return(

@@ -3,7 +3,7 @@ import { ScrollView, View, Pressable, Text, StyleSheet } from "react-native";
 import { colors } from "@/styles/colors";
 import { distinctCategory } from "@/database/taskFunction"
 
-export default function Category() {
+export default function CategoryFilter() {
     const fetchedCategories = distinctCategory();
 
     const categories = ["All", ...fetchedCategories];

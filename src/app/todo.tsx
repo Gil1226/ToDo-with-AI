@@ -1,5 +1,5 @@
 import { ScrollView, View } from 'react-native';
-import Category from '@/components/todo/Category';
+import CategoryFilter from '@/components/todo/CategoryFilter';
 import TodayTodo from '@/components/todo/Today';
 import UpcomingTodo from '@/components/todo/Upcoming';
 import CreateTasksBtn from '@/components/todo/CreateTaskBtn';
@@ -8,13 +8,13 @@ import { CreateTaskForm } from '@/components/taskWork/CreateTaskForm';
 import { useTasks } from '@/context/taskContext';
 import { useState } from 'react';
 
+
 export default function todo() {
-  const { setTodayTasks } = useTasks();
   const [showCreateTaskForm, setShowCreateTaskForm] = useState(false);
   return (
     <View style={commonStyles.container}>
       <ScrollView >
-            <Category/>
+            <CategoryFilter/>
             <TodayTodo/>
             <UpcomingTodo/>
       </ScrollView>
@@ -23,7 +23,7 @@ export default function todo() {
       )}
       
       {showCreateTaskForm && (
-        <CreateTaskForm setTasks={setTodayTasks} setShowCreateTaskForm={setShowCreateTaskForm}/>
+        <CreateTaskForm setShowCreateTaskForm={setShowCreateTaskForm}/>
       )}
       
 
