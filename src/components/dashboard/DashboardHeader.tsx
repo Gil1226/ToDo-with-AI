@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet } from "react-native";
-import { getFormattedDate } from "@/utility/date";
+import { getFormattedDate, getTimePeriod } from "@/utility/date";
 import { colors } from "@/styles/colors";
 
 export default function DashboardHeader() {
@@ -13,7 +13,7 @@ export default function DashboardHeader() {
             </Text>
 
             <Text style={styles.title}>
-                Good morning, {name} 👋
+                Good {getTimePeriod()}, {name} 
             </Text>
 
             <Text style={styles.subtitle}>

@@ -1,9 +1,8 @@
-import { colors } from "@/styles/colors";
-import { commonStyles, todo } from "@/styles/common";
+import { commonStyles} from "@/styles/common";
+import { todo } from "@/styles/todoStyles";
 import { ScrollView, StyleSheet, Text, View, Pressable, Modal } from "react-native";
 import { TaskList } from "../taskWork/TaskList";
 import { useTasks } from "@/context/taskContext";
-import { Task } from "@/types/taskType";
 import { useState } from "react";
 
 
@@ -20,7 +19,7 @@ export default function UpcomingTodo() {
     <>
       <ScrollView style={todo.taskSeparator}>
         <View style={[commonStyles.cardHeaderLayout, todo.headerLayout]}>
-          <Text>
+          <Text style={todo.title}>
             Upcomming
           </Text>
           <Pressable onPress={seeAllHandler}>

@@ -1,7 +1,5 @@
 import { View, Text } from "react-native";
-import { todayTask, upcomingTask } from "@/utility/Task";
 import {TaskCard} from "./TaskCard"
-import { useTasks } from "@/context/taskContext";
 import { Task } from "@/types/taskType";
 
 type TaskListProp = {

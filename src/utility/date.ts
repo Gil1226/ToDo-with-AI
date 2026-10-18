@@ -26,13 +26,26 @@ export function getTodayDate() {
   }).format(new Date());
 }
 
- 
 export function getTodayDateSQL() {
-    const today = new Date();
+  const today = new Date();
 
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+  return `${year}-${month}-${day}`;
+}
+
+export function getTimePeriod(date: Date = new Date()) {
+  const formatter = new Intl.DateTimeFormat("en-PH", {
+    timeZone: "Asia/Manila",
+    hour: "2-digit",
+    hourCycle: "h23",
+  });
+
+  const hour = Number(formatter.format(new Date()));
+
+  if (hour >= 5 && hour < 12) return "Morning";
+  if (hour >= 12 && hour < 17) return "Afternoon";
+  return "Evening";
 }

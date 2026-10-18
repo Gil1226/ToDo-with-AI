@@ -1,4 +1,5 @@
-import { commonStyles, todo } from "@/styles/common";
+import { commonStyles } from "@/styles/common";
+import { todo } from "@/styles/todoStyles";
 import { ScrollView, StyleSheet, Text, View, Pressable, Modal } from "react-native";
 import { TaskList } from "../taskWork/TaskList";
 import { useState } from "react";  
@@ -18,7 +19,7 @@ export default function TodayTodo() {
     <>
       <ScrollView style={todo.taskSeparator}>
         <View style={[commonStyles.cardHeaderLayout, todo.headerLayout]}>
-          <Text>
+          <Text style={todo.title}>
             Today
           </Text>
           <Pressable onPress={seeAllHandler}>
