@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 12,
+        paddingVertical: 6,
         borderRadius: 999,
     },
     selectedTab: {

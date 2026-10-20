@@ -1,54 +1,66 @@
-import {Pressable, Text, StyleSheet} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
+import { createTaskStyles } from "@/styles/createTaskStyles";
+import { getTodayDate } from "@/utility/dateFormat";
+import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import {createTaskStyles} from "@/styles/createTaskStyles";
-import {getTodayDate} from "@/utility/date";
-
+import { Pressable, StyleSheet, Text } from "react-native";
 
 type DateProps = {
-    formData: {
-        date: string;
-    };
-    updateForm: (field: string, value: string) => void;
-    showDatePicker: boolean;
-    setShowDatePicker: (value: boolean) => void;
+  formData: {
+    date: string;
+  };
+  updateForm: (field: string, value: string) => void;
+  showDatePicker: boolean;
+  setShowDatePicker: (value: boolean) => void;
 };
 
-export default function DateField({ formData, updateForm, showDatePicker, setShowDatePicker }: DateProps) {
-    const handleDateChange = (event: any, selectedDate: Date | undefined) => {
-        setShowDatePicker(false);
-        if (selectedDate) {
-            const [month, day, year] = formData.date.split("/");
-            const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-            updateForm("date", selectedDate.toLocaleDateString("en-US"));
-            console.log("Selected date:", formattedDate, "Today date:", getTodayDate());
-        }
+export default function DateField({
+  formData,
+  updateForm,
+  showDatePicker,
+  setShowDatePicker,
+}: DateProps) {
+  const handleDateChange = (event: any, selectedDate: Date | undefined) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      const [month, day, year] = formData.date.split("/");
+      const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      updateForm("date", selectedDate.toLocaleDateString("en-US"));
+      console.log(
+        "Selected date:",
+        formattedDate,
+        "Today date:",
+        getTodayDate(),
+      );
     }
-    
-    return(
-        <>
-            <Pressable style={createTaskStyles.row} onPress={() => setShowDatePicker(true)}>
-                <Ionicons name="calendar-outline" size={20} color="#8B9A6E" />
+  };
 
-                <Text style={createTaskStyles.label}>Date</Text>
+  return (
+    <>
+      <Pressable
+        style={createTaskStyles.row}
+        onPress={() => setShowDatePicker(true)}
+      >
+        <Ionicons name="calendar-outline" size={20} color="#8B9A6E" />
 
-                <Text style={createTaskStyles.value}>{formData.date == getTodayDate() ? "Today" : formData.date}</Text>
+        <Text style={createTaskStyles.label}>Date</Text>
 
-                <Ionicons name="chevron-forward" size={18} color="#999" />
-            </Pressable>
-            {showDatePicker && (
-                <DateTimePicker
-                    value={new Date()}
-                    mode="date"
-                    display="default"
-                    onValueChange={handleDateChange}
-                    onDismiss={() => setShowDatePicker(false)}
-                />
-            )}
-        </>
-    )
+        <Text style={createTaskStyles.value}>
+          {formData.date == getTodayDate() ? "Today" : formData.date}
+        </Text>
+
+        <Ionicons name="chevron-forward" size={18} color="#999" />
+      </Pressable>
+      {showDatePicker && (
+        <DateTimePicker
+          value={new Date()}
+          mode="date"
+          display="default"
+          onValueChange={handleDateChange}
+          onDismiss={() => setShowDatePicker(false)}
+        />
+      )}
+    </>
+  );
 }
 
-const styles = StyleSheet.create({
-    
-})
+const styles = StyleSheet.create({});

@@ -1,9 +1,9 @@
 import { useTasks } from "@/context/taskContext";
 import { updateCompleted } from "@/database/taskFunction";
+import { formatMDY } from "@/utility/dateFormat";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Task } from "../../types/taskType";
-import { formatMDY } from "@/utility/date";
 
 export function TaskCard({
   id,
@@ -13,21 +13,23 @@ export function TaskCard({
   category,
   completed = false,
 }: Task) {
-  const { todayTasks, updateTodayTask, updateUpcomingTask, upcomingTasks } = useTasks();
-  const task =  todayTasks.find(task => task.id === id) ?? upcomingTasks.find(task => task.id === id);
+  const { todayTasks, updateTodayTask, updateUpcomingTask, upcomingTasks } =
+    useTasks();
+  const task =
+    todayTasks.find((task) => task.id === id) ??
+    upcomingTasks.find((task) => task.id === id);
 
   const isCompleted = task?.completed;
 
-  const markDone = async() => {
+  const markDone = async () => {
     const realtimeValue = !isCompleted;
     updateCompleted(id, realtimeValue);
-    
-    if (todayTasks.some(task => task.id === id)) {
-        await updateTodayTask();
-    } else {
-        await updateUpcomingTask();
-    }
 
+    if (todayTasks.some((task) => task.id === id)) {
+      await updateTodayTask();
+    } else {
+      await updateUpcomingTask();
+    }
   };
   return (
     <View style={styles.wholeContainer}>

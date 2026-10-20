@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { ScrollView, View, Pressable, Text, StyleSheet } from "react-native";
 import { colors } from "@/styles/colors";
-import { distinctCategory } from "@/database/taskFunction"
 
-export default function CategoryFilter() {
-    const fetchedCategories = distinctCategory();
+
+type CategoryFilterProps = {
+  fetchedCategories: string[];
+};
+
+export default function CategoryFilter({fetchedCategories} : CategoryFilterProps) {
 
     const categories = ["All", ...fetchedCategories];
     const [selected, setSelected] = useState("All")
