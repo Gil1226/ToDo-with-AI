@@ -6,7 +6,12 @@ import { useState } from "react";
 import { Task } from "@/types/taskType";
 import { useTasks } from "@/context/taskContext";
 
-export default function TodayTodo() {
+type props = {
+  activeCategory: string
+
+}
+
+export default function TodayTodo({activeCategory}: props) {
   const{ todayTasks } = useTasks();
 
   const [showAllToday, setShowAllToday] = useState(false)
@@ -14,6 +19,14 @@ export default function TodayTodo() {
   const seeAllHandler = () => {
     setShowAllToday(true)
   };
+
+  const filteredTasks = 
+    activeCategory === "All" ? 
+      todayTasks 
+      :  todayTasks.filter(
+            (task) => task.category === activeCategory
+            );
+
 
   return (
     <>
@@ -29,7 +42,7 @@ export default function TodayTodo() {
           </Pressable>
         </View>  
           <View>  
-            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks.slice(0,5)}/>
+            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={filteredTasks.slice(0,5)}/>
           </View>
       </ScrollView>
 

@@ -14,6 +14,8 @@ import { distinctCategory } from "@/database/taskFunction"
 export default function todo() {
   const [showCreateTaskForm, setShowCreateTaskForm] = useState(false);
   const [segment, setSegment] = useState<"active" | "history">("active")
+  const [activeCategory, setActiveCategory] = useState("All");
+
 
   return (
     <View style={commonStyles.container}>
@@ -21,8 +23,8 @@ export default function todo() {
         {segment == "active" ?
           <ScrollView >
             <SegmentControl segment={segment} setSegment={setSegment}/>
-            <CategoryFilter fetchedCategories={distinctCategory()}/>
-            <TodayTodo/>
+            <CategoryFilter fetchedCategories={distinctCategory()} onSelectCategory={setActiveCategory}/>
+            <TodayTodo activeCategory={activeCategory}/>
             <UpcomingTodo/>
           </ScrollView>
           :

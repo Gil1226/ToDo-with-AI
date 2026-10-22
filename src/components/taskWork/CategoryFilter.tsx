@@ -5,15 +5,17 @@ import { colors } from "@/styles/colors";
 
 type CategoryFilterProps = {
   fetchedCategories: string[];
+  onSelectCategory: (category: string) => void;
 };
 
-export default function CategoryFilter({fetchedCategories} : CategoryFilterProps) {
+export default function CategoryFilter({fetchedCategories, onSelectCategory} : CategoryFilterProps) {
 
     const categories = ["All", ...fetchedCategories];
     const [selected, setSelected] = useState("All")
 
     const select = (category:string) => {
-        setSelected(category)
+        setSelected(category);
+        onSelectCategory(category);
     }
   return (
     <ScrollView 

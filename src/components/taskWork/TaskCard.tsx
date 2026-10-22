@@ -13,24 +13,28 @@ export function TaskCard({
   category,
   completed = false,
 }: Task) {
-  const { todayTasks, updateTodayTask, updateUpcomingTask, upcomingTasks } =
-    useTasks();
+  const { todayTasks, updateTodayTask, updateUpcomingTask, upcomingTasks, historyTasks, updateHistoryTask } = useTasks();
   const task =
     todayTasks.find((task) => task.id === id) ??
-    upcomingTasks.find((task) => task.id === id);
+    upcomingTasks.find((task) => task.id === id) ??
+    historyTasks.find((task) => task.id === id);
 
   const isCompleted = task?.completed;
 
   const markDone = async () => {
     const realtimeValue = !isCompleted;
-    updateCompleted(id, realtimeValue);
+
+    await updateCompleted(id, realtimeValue);
 
     if (todayTasks.some((task) => task.id === id)) {
       await updateTodayTask();
-    } else {
+    } else if (upcomingTasks.some((task) => task.id === id)) {
       await updateUpcomingTask();
+    } else if (historyTasks.some((task) => task.id === id)) {
+      await updateHistoryTask();
     }
   };
+  
   return (
     <View style={styles.wholeContainer}>
       <Pressable
