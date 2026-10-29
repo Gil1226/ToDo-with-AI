@@ -37,7 +37,7 @@ export default function ProgressCard({todayTasks, upcomingTasks}: tasks) {
           </Text>
 
           <Text style={styles.taskCount}>
-            {showOverall ? `${overallCompleted} of ${overallCount} task` : `${todayCompleted.length} of ${todayTasks.length}  tasks`}
+            {showOverall ? `${overallCompleted} of ${overallCount} tasks` : `${todayCompleted.length} of ${todayTasks.length} tasks`}
           </Text>
         </View>
         <Percentage

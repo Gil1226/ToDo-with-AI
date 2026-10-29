@@ -1,6 +1,7 @@
 import Category from "@/components/taskWork/createTaskComponent/Category";
 import DateField from "@/components/taskWork/createTaskComponent/Date";
-import Time from "@/components/taskWork/createTaskComponent/Time";
+import StartTime from "@/components/taskWork/createTaskComponent/StartTime";
+import EndTime from "@/components/taskWork/createTaskComponent/EndTime";
 import Title from "@/components/taskWork/createTaskComponent/Title";
 import { useTasks } from "@/context/taskContext";
 import { createTask } from "@/database/taskFunction";
@@ -9,17 +10,19 @@ import { getTodayDate } from "@/utility/dateFormat";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { timeConflict } from "@/utility/timeConflict";
 
 type CreateTaskFormProps = {
   setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
-  const { updateTodayTask, updateUpcomingTask } = useTasks();
+  const { updateTodayTask, todayTasks, updateUpcomingTask, upcomingTasks } = useTasks();
 
   const [formData, setFormData] = useState({
     title: "",
     time: "",
+    endTime: "",
     date: getTodayDate(),
     category: "",
   });
@@ -32,6 +35,7 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
   };
 
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
 
@@ -44,13 +48,32 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
       Alert.alert("Missing Time", "Please enter a task time.");
       return;
     }
+    if (!formData.endTime.trim()) {
+      Alert.alert("Missing End Time", "Please enter a task time.");
+      return;
+    }
     if (!formData.category.trim()) {
       Alert.alert("Missing Category", "Please enter a task category.");
       return;
     }
+    const hasConflict = timeConflict({
+      todayTasks,
+      newStartTime: formData.time,
+      newEndTime: formData.endTime,
+    });
+    
+    console.log(hasConflict, "conflict")
+    if (hasConflict) {
+      Alert.alert(
+        "Schedule Conflict",
+        "This task overlaps with an existing task.",
+      );
+      return;
+    }
+
     const [month, day, year] = formData.date.split("/");
     const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    createTask(formData.title, formData.time, formattedDate, formData.category);
+    createTask(formData.title, formData.time, formData.endTime, formattedDate, formData.category);
     updateTodayTask();
     updateUpcomingTask();
     setShowCreateTaskForm(false);
@@ -67,11 +90,17 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
         </View>
 
         <Title formData={formData} updateForm={updateForm} />
-        <Time
+        <StartTime
           formData={formData}
           updateForm={updateForm}
           showTimePicker={showTimePicker}
           setShowTimePicker={setShowTimePicker}
+        />
+        <EndTime
+          formData={formData}
+          updateForm={updateForm}
+          showEndTimePicker={showEndTimePicker}
+          setShowEndTimePicker={setShowEndTimePicker}
         />
         <DateField
           formData={formData}

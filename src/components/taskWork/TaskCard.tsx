@@ -9,6 +9,7 @@ export function TaskCard({
   id,
   title,
   time,
+  endTime,
   date,
   category,
   completed = false,
@@ -62,7 +63,7 @@ export function TaskCard({
               isCompleted ? styles.timeCompleted : styles.timeIncomplete,
             ]}
           >
-            {time} - {formatMDY(date)}
+             {formatMDY(date)} ({time} -{endTime})
           </Text>
           <View
             style={[

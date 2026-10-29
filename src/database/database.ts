@@ -8,6 +8,7 @@ export function initializeDatabase() {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     time TEXT,
+    endTime TEXT,
     date TEXT,
     category TEXT,
     completed INTEGER NOT NULL DEFAULT 0,

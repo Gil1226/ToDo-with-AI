@@ -33,6 +33,7 @@ export function fetchUpcomming() {
   }));
   return convertTasks;
 }
+
 export function fetchHistory() {
   const today = getTodayDateSQL();
   const tasks = db.getAllSync<Task>(
@@ -50,18 +51,31 @@ export function fetchHistory() {
 export function createTask(
   title: string,
   time: string,
+  endTime: string,
   date: string,
   category: string,
 ) {
   db.runSync(
-    `INSERT INTO tasks (title, time, date, category) 
-                VALUES (?, ?, ?, ?)`,
+    `INSERT INTO tasks (title, time, endTime, date, category) 
+                VALUES (?, ?, ?, ?, ?)`,
     title,
     time,
+    endTime,
     date,
     category,
   );
   console.log("Task created successfully.");
+}
+
+export function updateTask(date: string, newTime: string, newEndTime: string, taskId: number) {
+    return db.runSync(
+      `UPDATE tasks SET date = ?, time = ?, endTime = ?
+       WHERE id = ? AND completed = 0`,
+      date,
+      newTime,
+      newEndTime,
+      taskId,
+    );
 }
 
 export function updateCompleted(id: number, completed: boolean) {

@@ -8,7 +8,6 @@ import { useTasks } from "@/context/taskContext";
 
 type props = {
   activeCategory: string
-
 }
 
 export default function TodayTodo({activeCategory}: props) {
