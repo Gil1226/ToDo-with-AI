@@ -9,11 +9,11 @@ import { useTasks } from "@/context/taskContext";
 
 
 export default function DashboardScreen() {
-    const {tasks} = useTasks();
+    const {todayTasks, upcomingTasks} = useTasks();
     return (
         <ScrollView style={commonStyles.container}>
           <DashboardHeader/>
-          <ProgressCard tasks={tasks}/>
+          <ProgressCard todayTasks={todayTasks} upcomingTasks={upcomingTasks}/>
           <TodayTask/>
           <UpcomingTask/>
         </ScrollView> 

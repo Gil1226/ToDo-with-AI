@@ -1,5 +1,6 @@
 import { useTasks } from "@/context/taskContext";
 import { updateCompleted } from "@/database/taskFunction";
+import { formatMDY } from "@/utility/dateFormat";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Task } from "../../types/taskType";
@@ -8,20 +9,33 @@ export function TaskCard({
   id,
   title,
   time,
+  endTime,
+  date,
   category,
   completed = false,
 }: Task) {
-  const { tasks, updateTask } = useTasks();
-  const task = tasks.find((task) => task.id === id);
+  const { todayTasks, updateTodayTask, updateUpcomingTask, upcomingTasks, historyTasks, updateHistoryTask } = useTasks();
+  const task =
+    todayTasks.find((task) => task.id === id) ??
+    upcomingTasks.find((task) => task.id === id) ??
+    historyTasks.find((task) => task.id === id);
 
   const isCompleted = task?.completed;
 
   const markDone = async () => {
     const realtimeValue = !isCompleted;
 
-    updateCompleted(id, realtimeValue);
-    updateTask();
+    await updateCompleted(id, realtimeValue);
+
+    if (todayTasks.some((task) => task.id === id)) {
+      await updateTodayTask();
+    } else if (upcomingTasks.some((task) => task.id === id)) {
+      await updateUpcomingTask();
+    } else if (historyTasks.some((task) => task.id === id)) {
+      await updateHistoryTask();
+    }
   };
+  
   return (
     <View style={styles.wholeContainer}>
       <Pressable
@@ -49,7 +63,7 @@ export function TaskCard({
               isCompleted ? styles.timeCompleted : styles.timeIncomplete,
             ]}
           >
-            {time}
+             {formatMDY(date)} ({time} -{endTime})
           </Text>
           <View
             style={[

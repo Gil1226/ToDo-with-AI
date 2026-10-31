@@ -1,29 +1,30 @@
 import { View, Text } from "react-native";
-import { todayTask, upcomingTask } from "@/utility/Task";
 import {TaskCard} from "./TaskCard"
-import { useTasks } from "@/context/taskContext";
+import { Task } from "@/types/taskType";
 
 type TaskListProp = {
-    type: "today" | "upcoming",
+    emptyMessage: string,
+    allTask: Task[],
 }
 
-export function TaskList({type} : TaskListProp){
-    const {tasks} = useTasks()
-    const filteredTask = type == "today" ? todayTask(tasks) : upcomingTask(tasks);
+export function TaskList({emptyMessage, allTask} : TaskListProp){
 
-    if (filteredTask.length === 0 ) {
-        return <Text>{type === "today" ? "No task today, Enjoy your rest!": "No more upcoming task"}</Text>;
+    if (allTask.length === 0 ) {
+        return <Text>{emptyMessage}</Text>;
     }
 
     return(
-        <View>
-            {filteredTask.map(task => (
-                <TaskCard
-                    key={task.id}
-                    {...task}
+        
+            <View>
+                <View>
+                    {allTask.map(task => (
+                        <TaskCard
+                            key={task.id}
+                            {...task}
 
-                />
-            ))}
-        </View>
+                        />
+                    ))}
+                </View>
+            </View>
     )
 }

@@ -1,24 +1,24 @@
 import { Text, View, Pressable, StyleSheet } from "react-native";
 import { useState } from "react";
-import Percentage from "../../utility/Percentage";
+import Percentage from "./Percentage";
 import { commonStyles } from "@/styles/common";
 import { Task } from "@/types/taskType";
-import { getTodayDate } from "@/utility/date";
 import { colors } from "@/styles/colors";
 
 type tasks = {
-  tasks: Task[];
+  todayTasks: Task[];
+  upcomingTasks: Task[];
 }
 
-export default function ProgressCard({tasks}: tasks) {
+export default function ProgressCard({todayTasks, upcomingTasks}: tasks) {
   const [showOverall, setShowOverall] = useState(false);
 
-  const todayTasksList = tasks.filter(task => task.date === getTodayDate()); 
-  const todayCompleted = todayTasksList.filter(task => task.completed)
+  const todayCompleted = todayTasks.filter(task => task.completed);
+  const upcomingCompleted = upcomingTasks.filter(task => task.completed);
 
-  const overallTasksList = tasks.filter(task => task.date > getTodayDate() || task.date === getTodayDate());
-  const overallCompleted = overallTasksList.filter(task => task.completed)
-
+  const overallCount = upcomingTasks.length + todayTasks.length;
+  const overallCompleted = upcomingCompleted.length + todayCompleted.length;
+  
   return (  
     <View style={commonStyles.componentContainer}>
       <Pressable
@@ -37,12 +37,12 @@ export default function ProgressCard({tasks}: tasks) {
           </Text>
 
           <Text style={styles.taskCount}>
-            {showOverall ? `${overallCompleted.length} of ${overallTasksList.length} task` : `${todayCompleted.length} of ${todayTasksList.length}  tasks`}
+            {showOverall ? `${overallCompleted} of ${overallCount} tasks` : `${todayCompleted.length} of ${todayTasks.length} tasks`}
           </Text>
         </View>
         <Percentage
-          completed={showOverall ? overallCompleted.length : todayCompleted.length}
-          total={showOverall ? overallTasksList.length : todayTasksList.length}
+          completed={showOverall ? overallCompleted : todayCompleted.length}
+          total={showOverall ? overallCount : todayTasks.length}
         />
       </View>
     </View>
