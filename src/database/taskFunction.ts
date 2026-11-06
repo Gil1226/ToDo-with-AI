@@ -99,6 +99,10 @@ export function updateCompleted(id: number, completed: boolean) {
 }
 
 
+export function deleteTask(taskId: number) {
+  db.runSync(`DELETE FROM tasks WHERE id = ?`, taskId);
+  
+}
 
 
 

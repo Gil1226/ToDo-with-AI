@@ -4,11 +4,13 @@ import { fetchAllTasks } from "@/database/taskFunction";
 
 
 type TimeConflictProps = {
+  selectedDate: string;
   newStartTime: string;
   newEndTime: string;
 };
 
 export function timeConflict({
+  selectedDate,
   newStartTime,
   newEndTime,
 }: TimeConflictProps): boolean {
@@ -27,6 +29,10 @@ export function timeConflict({
   }
 
   return allTasks.some((task) => {
+     if (task.date !== selectedDate) {
+      return false;
+    }
+
     if (task.time == null || task.endTime == null) {
       return false;
     }

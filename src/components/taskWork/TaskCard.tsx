@@ -17,7 +17,7 @@ export function TaskCard({
   const { todayTasks, updateTodayTask } = useTodayTasks();
   const { upcomingTasks, updateUpcomingTask } = useUpcomingTasks();
   const { historyTasks, updateHistoryTask } = useHistoryTasks();
-  
+
   const task =
     todayTasks.find((task) => task.id === id) ??
     upcomingTasks.find((task) => task.id === id) ??

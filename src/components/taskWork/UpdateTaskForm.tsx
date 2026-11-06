@@ -13,10 +13,10 @@ import { updateTask } from "@/database/taskFunction";
 import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";           
 
 type CreateTaskFormProps = {
-  setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function UpdateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {                                          
+export function UpdateTaskForm({ setShowUpdateTaskForm }: CreateTaskFormProps) {                                          
     const { updateTodayTask } = useTodayTasks();
     const { updateUpcomingTask } = useUpcomingTasks();
 
@@ -59,6 +59,7 @@ export function UpdateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
           return;
         }
         const hasConflict = timeConflict({
+          selectedDate: formData.date,
           newStartTime: formData.time,
           newEndTime: formData.endTime,
         });
@@ -74,10 +75,10 @@ export function UpdateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
     
         const [month, day, year] = formData.date.split("/");
         const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-        updateTask(formattedDate, formData.time, formData.endTime, taskId);
+        updateTask(formattedDate, formData.time, formData.endTime, 9);
         updateTodayTask();
         updateUpcomingTask();
-        setShowCreateTaskForm(false);
+        setShowUpdateTaskForm(false);
       };
     
 
@@ -85,8 +86,8 @@ export function UpdateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
         <View style={styles.overlay}>
             <View style={styles.form}>
                 <View style={[styles.header, commonStyles.flexBetween]}>
-                <Text style={styles.title}>New task</Text>
-                <Pressable onPress={() => setShowCreateTaskForm(false)}>
+                <Text style={styles.title}>Update task</Text>
+                <Pressable onPress={() => setShowUpdateTaskForm(false)}>
                     <Ionicons name="close" size={22} color="#8B9A6E" />
                 </Pressable>
                 </View>

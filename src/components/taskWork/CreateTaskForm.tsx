@@ -58,6 +58,7 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
       return;
     }
     const hasConflict = timeConflict({
+      selectedDate: formData.date,
       newStartTime: formData.time,
       newEndTime: formData.endTime,
     });

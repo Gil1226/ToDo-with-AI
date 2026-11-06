@@ -5,13 +5,16 @@ import { TaskList } from "../taskWork/TaskList";
 import { useState } from "react";  
 import { Task } from "@/types/taskType";
 import { useTodayTasks } from "@/context/taskContext";
+import { handleDeleteTask } from "@/utility/deleteFunction";
+import { handleEditTask } from "@/utility/updateFunction";
 
 type props = {
   activeCategory: string
+  setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function TodayTodo({activeCategory}: props) {
-  const{ todayTasks } = useTodayTasks();
+export default function TodayTodo({activeCategory, setShowUpdateTaskForm}: props) {
+  const{ todayTasks, updateTodayTask } = useTodayTasks();
 
   const [showAllToday, setShowAllToday] = useState(false)
 
@@ -41,7 +44,7 @@ export default function TodayTodo({activeCategory}: props) {
           </Pressable>
         </View>  
           <View>  
-            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={filteredTasks.slice(0,5)}/>
+            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={filteredTasks.slice(0,5)} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateTodayTask })} />
           </View>
       </ScrollView>
 
@@ -55,7 +58,7 @@ export default function TodayTodo({activeCategory}: props) {
             </Pressable>
           </View>
           <ScrollView>
-            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks}/>
+            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateTodayTask })} />
           </ScrollView>
         </View>
       </Modal>
