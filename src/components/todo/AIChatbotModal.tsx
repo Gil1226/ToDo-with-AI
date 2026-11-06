@@ -7,7 +7,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/styles/colors";
 import AIChatbot from "../taskWork/aiAssistant/aiChatbot";
-import { useTasks } from "@/context/taskContext";
+import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";
 
 type Props = {
   visible: boolean;
@@ -18,7 +18,8 @@ export default function AIChatbotModal({
   visible,
   onClose,
 }: Props) {
-  const { updateTodayTask, updateUpcomingTask } = useTasks();
+  const { updateTodayTask } = useTodayTasks();
+  const { updateUpcomingTask } = useUpcomingTasks();
 
   function handleTasksChanged() {
     updateTodayTask();

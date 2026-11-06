@@ -4,14 +4,14 @@ import { ScrollView, StyleSheet, Text, View, Pressable, Modal } from "react-nati
 import { TaskList } from "../taskWork/TaskList";
 import { useState } from "react";  
 import { Task } from "@/types/taskType";
-import { useTasks } from "@/context/taskContext";
+import { useTodayTasks } from "@/context/taskContext";
 
 type props = {
   activeCategory: string
 }
 
 export default function TodayTodo({activeCategory}: props) {
-  const{ todayTasks } = useTasks();
+  const{ todayTasks } = useTodayTasks();
 
   const [showAllToday, setShowAllToday] = useState(false)
 

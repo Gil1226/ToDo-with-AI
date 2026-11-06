@@ -19,7 +19,7 @@ export default function todo() {
   const [showAIChatbot, setShowAIChatbot] = useState(false);
   const [segment, setSegment] = useState<"active" | "history">("active")
   const [activeCategory, setActiveCategory] = useState("All");
-
+  const [taskId, setTaskId] = useState<number | null>(null);      
 
   return (
     <View style={commonStyles.container}>

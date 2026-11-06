@@ -5,11 +5,12 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import ProgressCard from "@/components/dashboard/ProgressCard"
 import TodayTask from "@/components/dashboard/TodayTask";
 import UpcomingTask from "@/components/dashboard/UpcomingTask";
-import { useTasks } from "@/context/taskContext";
+import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";
 
 
 export default function DashboardScreen() {
-    const {todayTasks, upcomingTasks} = useTasks();
+    const {todayTasks} = useTodayTasks();
+    const {upcomingTasks} = useUpcomingTasks();
     return (
         <ScrollView style={commonStyles.container}>
           <DashboardHeader/>

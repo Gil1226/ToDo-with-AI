@@ -3,11 +3,11 @@ import { Task } from "@/types/taskType";
 import SearchBar from "./HistoryTodoComponent/SearchBar";
 import CategoryFilter from "../taskWork/CategoryFilter";
 import { TaskList } from "../taskWork/TaskList";
-import { useTasks } from "@/context/taskContext";
+import { useHistoryTasks } from "@/context/taskContext";
 import { useState } from "react";
 
 export default function HistoryTodo() {
-    const { historyTasks } = useTasks()
+    const { historyTasks } = useHistoryTasks();
     const [activeCategory, setActiveCategory] = useState("All");
 
     const fetchedCategories = [...new Set(historyTasks.map((task) => task.category))];

@@ -2,12 +2,12 @@ import { commonStyles} from "@/styles/common";
 import { todo } from "@/styles/todoStyles";
 import { ScrollView, StyleSheet, Text, View, Pressable, Modal } from "react-native";
 import { TaskList } from "../taskWork/TaskList";
-import { useTasks } from "@/context/taskContext";
+import { useUpcomingTasks } from "@/context/taskContext";
 import { useState } from "react";
 
 
 export default function UpcomingTodo() {
-  const { upcomingTasks } = useTasks();
+  const { upcomingTasks } = useUpcomingTasks();
 
   const [showAllUpcoming, setShowAllUpcoming] = useState(false)
 

@@ -21,7 +21,6 @@ export function TaskList({emptyMessage, allTask} : TaskListProp){
                         <TaskCard
                             key={task.id}
                             {...task}
-
                         />
                     ))}
                 </View>

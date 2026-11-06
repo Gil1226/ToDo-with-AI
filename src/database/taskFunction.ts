@@ -2,11 +2,16 @@ import { Task } from "@/types/taskType";
 import { getTodayDateSQL } from "@/utility/dateFormat";
 import { db } from "./database";
 
+export function fetchAllTasks() {
+  const tasks = db.getAllSync<Task>(`SELECT * FROM tasks ORDER BY date ASC, time ASC`);
+  return tasks; 
+}
+
 export function fetchToday() {
   const today = getTodayDateSQL();
   const tasks = db.getAllSync<Task>(
     `
-        SElECT * FROM tasks WHERE date = ? ORDER BY time ASC
+      SELECT * FROM tasks WHERE date = ? ORDER BY time ASC
     `,
     today,
   );
@@ -22,7 +27,7 @@ export function fetchUpcomming() {
   const today = getTodayDateSQL();
   const tasks = db.getAllSync<Task>(
     `
-        SElECT * FROM tasks WHERE date > ? ORDER BY date ASC, time ASC
+      SELECT * FROM tasks WHERE date > ? ORDER BY date ASC, time ASC
     `,
     today,
   );
@@ -37,7 +42,7 @@ export function fetchUpcomming() {
 export function fetchHistory() {
   const today = getTodayDateSQL();
   const tasks = db.getAllSync<Task>(
-    `SElECT * FROM tasks WHERE date < ? ORDER BY date ASC, time ASC`,
+    `SELECT * FROM tasks WHERE date < ? ORDER BY date ASC, time ASC`,
     today,
   );
 
@@ -47,6 +52,10 @@ export function fetchHistory() {
   }));
   return convertTasks;
 }
+
+
+
+
 
 export function createTask(
   title: string,
@@ -67,16 +76,19 @@ export function createTask(
   console.log("Task created successfully.");
 }
 
-export function updateTask(date: string, newTime: string, newEndTime: string, taskId: number) {
-    return db.runSync(
-      `UPDATE tasks SET date = ?, time = ?, endTime = ?
-       WHERE id = ? AND completed = 0`,
-      date,
-      newTime,
-      newEndTime,
-      taskId,
-    );
-}
+
+
+
+export function updateTask(date: string, time: string, endTime: string, taskId: number) {
+  return db.runSync(
+    `UPDATE tasks SET date = ?, time = ?, endTime = ?
+      WHERE id = ? AND completed = 0`,
+    date,
+    time,
+    endTime,
+    taskId,
+  );
+} 
 
 export function updateCompleted(id: number, completed: boolean) {
   db.runSync(
@@ -84,8 +96,11 @@ export function updateCompleted(id: number, completed: boolean) {
     completed ? 1 : 0,
     id,
   );
-  console.log("Task Updated successfully.");
 }
+
+
+
+
 
 type CategoryRow = {
   category: string;
@@ -104,12 +119,11 @@ export function todayCount() {
   const today = getTodayDateSQL();
   const count = db.getFirstSync<{ count: number }>(
     `
-        SELECT COUNT(*) as count
-        FROM tasks
-        WHERE date = ?
+      SELECT COUNT(*) as count
+      FROM tasks
+      WHERE date = ?
     `,
     today,
   );
-
   return count ? count.count : 0;
 }

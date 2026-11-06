@@ -2,10 +2,10 @@ import { commonStyles } from "@/styles/common";
 import { Link } from "expo-router";
 import { Text, View } from "react-native";
 import { TaskList } from "../taskWork/TaskList";
-import { useTasks } from "@/context/taskContext";
+import { useTodayTasks } from "@/context/taskContext";
 
 export default function TodayTask() {
-  const {todayTasks} = useTasks()
+  const {todayTasks} = useTodayTasks()
   
   return (
     <View style={commonStyles.componentContainer}>

@@ -2,10 +2,10 @@ import { commonStyles } from "@/styles/common";
 import { Link } from "expo-router";
 import { Text, View } from "react-native";
 import { TaskList } from "../taskWork/TaskList";
-import { useTasks } from "@/context/taskContext";
+import { useUpcomingTasks } from "@/context/taskContext";
 
 export default function UpcomingTask() {
-  const { upcomingTasks } = useTasks();
+  const { upcomingTasks } = useUpcomingTasks();
   return (
     <View style={commonStyles.componentContainer}>
       <View style={commonStyles.cardHeaderLayout}>

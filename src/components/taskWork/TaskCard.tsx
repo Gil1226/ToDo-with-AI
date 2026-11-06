@@ -1,4 +1,4 @@
-import { useTasks } from "@/context/taskContext";
+import { useTodayTasks, useUpcomingTasks, useHistoryTasks } from "@/context/taskContext";
 import { updateCompleted } from "@/database/taskFunction";
 import { formatMDY } from "@/utility/dateFormat";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,7 +14,10 @@ export function TaskCard({
   category,
   completed = false,
 }: Task) {
-  const { todayTasks, updateTodayTask, updateUpcomingTask, upcomingTasks, historyTasks, updateHistoryTask } = useTasks();
+  const { todayTasks, updateTodayTask } = useTodayTasks();
+  const { upcomingTasks, updateUpcomingTask } = useUpcomingTasks();
+  const { historyTasks, updateHistoryTask } = useHistoryTasks();
+  
   const task =
     todayTasks.find((task) => task.id === id) ??
     upcomingTasks.find((task) => task.id === id) ??
