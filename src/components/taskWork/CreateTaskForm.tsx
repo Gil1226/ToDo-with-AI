@@ -1,16 +1,17 @@
-import Category from "@/components/taskWork/createTaskComponent/Category";
-import DateField from "@/components/taskWork/createTaskComponent/Date";
-import StartTime from "@/components/taskWork/createTaskComponent/StartTime";
-import EndTime from "@/components/taskWork/createTaskComponent/EndTime";
-import Title from "@/components/taskWork/createTaskComponent/Title";
+import Category from "@/components/taskWork/taskManipulationComponent/Category";
+import DateField from "@/components/taskWork/taskManipulationComponent/Date";
+import EndTime from "@/components/taskWork/taskManipulationComponent/EndTime";
+import StartTime from "@/components/taskWork/taskManipulationComponent/StartTime";
+import Title from "@/components/taskWork/taskManipulationComponent/Title";
+import Importance from "@/components/taskWork/taskManipulationComponent/Importance";  
 import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";
 import { createTask } from "@/database/taskFunction";
 import { commonStyles } from "@/styles/common";
 import { getTodayDate } from "@/utility/dateFormat";
+import { timeConflict } from "@/utility/timeConflict";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
-import { timeConflict } from "@/utility/timeConflict";
 
 type CreateTaskFormProps = {
   setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,9 +27,10 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
     endTime: "",
     date: getTodayDate(),
     category: "",
+    isImportant: false, 
   });
 
-  const updateForm = (field: string, value: string) => {
+  const updateForm = (field: string, value: string | boolean) => {
     setFormData({
       ...formData,
       [field]: value,
@@ -62,8 +64,8 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
       newStartTime: formData.time,
       newEndTime: formData.endTime,
     });
-    
-    console.log(hasConflict, "conflict")
+
+    console.log(hasConflict, "conflict");
     if (hasConflict) {
       Alert.alert(
         "Schedule Conflict",
@@ -74,7 +76,15 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
 
     const [month, day, year] = formData.date.split("/");
     const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    createTask(formData.title, formData.time, formData.endTime, formattedDate, formData.category);
+    const isImportantValue = formData.isImportant ? 1 : 0;
+    createTask(
+      formData.title,
+      formData.time,
+      formData.endTime,
+      formattedDate,
+      formData.category,
+      isImportantValue
+    );
     updateTodayTask();
     updateUpcomingTask();
     setShowCreateTaskForm(false);
@@ -114,6 +124,10 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
           updateForm={updateForm}
           showCategoryPicker={showCategoryPicker}
           setShowCategoryPicker={setShowCategoryPicker}
+        />
+        <Importance
+          formData={formData}
+          updateForm={updateForm}
         />
         <Pressable style={styles.saveButton} onPress={handleSaveTask}>
           <Text style={styles.saveText}>Save task</Text>

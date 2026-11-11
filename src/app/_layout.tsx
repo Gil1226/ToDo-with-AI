@@ -2,11 +2,10 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect } from "react";
 import { TaskProvider } from "../context/taskContext";
-import { createTask, fetchToday } from "@/database/taskFunction";
+import { fetchAllTasks } from "@/database/taskFunction";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function TabLayout() {
-  console.log(fetchToday());
   useEffect(() => {
     //createTask("Study React Native", "20:00", "2026-09-28", "Programming");
 
@@ -15,6 +14,7 @@ export default function TabLayout() {
     //createTask("Read a book", "21:00", "2026-10-22", "Personal");
 
     //createTask("Finish project", "14:00", "2026-10-22", "School");
+    console.log(fetchAllTasks());
   }, [])
   return (
     <GestureHandlerRootView>
