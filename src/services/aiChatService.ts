@@ -5,23 +5,7 @@ import { AITask } from "@/types/aiTask";
 import { getTodayDateSQL } from "@/utility/dateFormat";
 import { validDate, validTime } from "@/utility/dateAndTimeValidation";
 import { createTask, updateTask } from "@/database/taskFunction";
-
-export function getAITasks(): AITask[] {
-  return db.getAllSync<AITask>(`
-    SELECT
-      id,
-      title,
-      time,
-      endTime,
-      date,
-      category,
-      completed,
-      isImportant
-    FROM tasks
-    ORDER BY date, time
-    LIMIT 100
-  `);
-}
+import { getAITasks } from "@/database/AITaskFuntion";
 
 export type ConversationMessage = {
   role: "user" | "assistant";
@@ -30,7 +14,7 @@ export type ConversationMessage = {
 
 export async function processChatMessage(message: string, conversationHistory: ConversationMessage[] = []): Promise<AIAction> {
   const tasks = getAITasks();
-
+  console.log("Retrieved tasks from database:", tasks);
   return askGemini(conversationHistory, message, tasks, getTodayDateSQL());
 }
 
@@ -55,7 +39,7 @@ export function confirmTaskAction(action: AIAction): string {
       throw new Error("End time must be later than start time.");
     }
 
-    createTask(title, action.time || "", action.endTime || "", action.date || "", action.category || "")
+    createTask(title, action.time || "", action.endTime || "", action.date || "", action.category || "", action.isImportant ? 1 : 0)
     
     return `Created "${title}".`;
   }

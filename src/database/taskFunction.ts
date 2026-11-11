@@ -63,15 +63,17 @@ export function createTask(
   endTime: string,
   date: string,
   category: string,
+  isImportantValue: number
 ) {
   db.runSync(
-    `INSERT INTO tasks (title, time, endTime, date, category) 
-                VALUES (?, ?, ?, ?, ?)`,
+    `INSERT INTO tasks (title, time, endTime, date, category, isImportant) 
+                VALUES (?, ?, ?, ?, ?, ?)`,
     title,
     time,
     endTime,
     date,
     category,
+    isImportantValue,
   );
   console.log("Task created successfully.");
 }
