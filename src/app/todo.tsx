@@ -20,7 +20,7 @@ export default function todo() {
   const [showAIChatbot, setShowAIChatbot] = useState(false);
   const [segment, setSegment] = useState<"active" | "history">("active")
   const [activeCategory, setActiveCategory] = useState("All");
-  const [taskId, setTaskId] = useState<number | null>(null);   
+  const [taskId, setTaskId] = useState<number>(0);   
   
   const [showUpdateTaskForm, setShowUpdateTaskForm] = useState(false);
 
@@ -31,13 +31,13 @@ export default function todo() {
           <ScrollView >
             <SegmentControl segment={segment} setSegment={setSegment}/>
             <CategoryFilter fetchedCategories={distinctCategory()} onSelectCategory={setActiveCategory}/>
-            <TodayTodo activeCategory={activeCategory} setShowUpdateTaskForm={setShowUpdateTaskForm}/>
-            <UpcomingTodo setShowUpdateTaskForm={setShowUpdateTaskForm}/>
+            <TodayTodo activeCategory={activeCategory} setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
+            <UpcomingTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
           </ScrollView>
           :
           <ScrollView>
             <SegmentControl segment={segment} setSegment={setSegment}/>
-            <HistoryTodo setShowUpdateTaskForm={setShowUpdateTaskForm}/>
+            <HistoryTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
           </ScrollView>
         }
             
@@ -49,7 +49,7 @@ export default function todo() {
       }
       
       {showUpdateTaskForm && (
-        <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} />
+        <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} taskId={taskId}/>
       )}
       
       <AIChatbotBtn onPress={() => setShowAIChatbot(true)}/>

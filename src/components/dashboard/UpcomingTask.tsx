@@ -9,9 +9,10 @@ import { handleEditTask } from "@/utility/updateFunction";
 
 type UpcomingTaskProps = {
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setTaskId: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export default function UpcomingTask({ setShowUpdateTaskForm }: UpcomingTaskProps) {
+export default function UpcomingTask({ setShowUpdateTaskForm, setTaskId }: UpcomingTaskProps) {
   const { upcomingTasks, updateUpcomingTask } = useUpcomingTasks();
   return (
     <View style={commonStyles.componentContainer}>
@@ -20,7 +21,7 @@ export default function UpcomingTask({ setShowUpdateTaskForm }: UpcomingTaskProp
         <Link href={"/"}>➜</Link>
       </View>
       <View style={commonStyles.card}>
-        <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks.slice(0,5)} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateUpcomingTask })} />
+        <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks.slice(0,5)} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateUpcomingTask })} />
       </View>
     </View>
   );

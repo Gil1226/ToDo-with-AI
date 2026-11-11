@@ -8,9 +8,10 @@ import { handleEditTask } from "@/utility/updateFunction";
 
 type TodayTaskProps = {
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setTaskId: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export default function TodayTask({ setShowUpdateTaskForm }: TodayTaskProps) {
+export default function TodayTask({ setShowUpdateTaskForm, setTaskId }: TodayTaskProps) {
   const {todayTasks, updateTodayTask} = useTodayTasks()
   
   return (
@@ -20,7 +21,7 @@ export default function TodayTask({ setShowUpdateTaskForm }: TodayTaskProps) {
         <Link href={"/"}>➜</Link>
       </View>
       <View style={commonStyles.card}>
-        <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks.slice(0,5)}  onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateTodayTask })} />
+        <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks.slice(0,5)}  onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateTodayTask })} />
       </View>
     </View>
   );

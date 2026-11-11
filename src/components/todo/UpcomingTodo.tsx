@@ -9,9 +9,10 @@ import { handleEditTask } from "@/utility/updateFunction";
 
 type TodayTaskProps = {
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setTaskId: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export default function UpcomingTodo({ setShowUpdateTaskForm }: TodayTaskProps) {
+export default function UpcomingTodo({ setShowUpdateTaskForm, setTaskId }: TodayTaskProps) {
   const { upcomingTasks, updateUpcomingTask } = useUpcomingTasks();
 
   const [showAllUpcoming, setShowAllUpcoming] = useState(false)
@@ -34,7 +35,7 @@ export default function UpcomingTodo({ setShowUpdateTaskForm }: TodayTaskProps) 
           </Pressable>
         </View>  
           <View>  
-            <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks.slice(0,5)} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateUpcomingTask })} />
+            <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks.slice(0,5)} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateUpcomingTask })} />
           </View>
       </ScrollView>
       <Modal visible={showAllUpcoming} onRequestClose={() => setShowAllUpcoming(false)} animationType="slide">
@@ -47,7 +48,7 @@ export default function UpcomingTodo({ setShowUpdateTaskForm }: TodayTaskProps) 
             </Pressable>
           </View>
           <ScrollView>
-            <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateUpcomingTask })} />
+            <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateUpcomingTask })} />
           </ScrollView>
         </View>
       </Modal>

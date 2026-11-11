@@ -14,9 +14,10 @@ import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";
 
 type CreateTaskFormProps = {
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+  taskId: number;
 };
 
-export function UpdateTaskForm({ setShowUpdateTaskForm }: CreateTaskFormProps) {                                          
+export function UpdateTaskForm({ setShowUpdateTaskForm, taskId }: CreateTaskFormProps) {                                          
     const { updateTodayTask } = useTodayTasks();
     const { updateUpcomingTask } = useUpcomingTasks();
 
@@ -75,7 +76,7 @@ export function UpdateTaskForm({ setShowUpdateTaskForm }: CreateTaskFormProps) {
     
         const [month, day, year] = formData.date.split("/");
         const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-        updateTask(formattedDate, formData.time, formData.endTime, 9);
+        updateTask(formattedDate, formData.time, formData.endTime, taskId);
         updateTodayTask();
         updateUpcomingTask();
         setShowUpdateTaskForm(false);

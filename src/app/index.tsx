@@ -12,6 +12,7 @@ import { UpdateTaskForm } from "@/components/taskWork/UpdateTaskForm";
 
 export default function DashboardScreen() {
     const [showUpdateTaskForm, setShowUpdateTaskForm] = useState(false);
+    const [taskId, setTaskId] = useState<number>(0);   
     const {todayTasks} = useTodayTasks();
     const {upcomingTasks} = useUpcomingTasks();
 
@@ -20,11 +21,11 @@ export default function DashboardScreen() {
             <ScrollView style={commonStyles.container}>
                 <DashboardHeader/>
                 <ProgressCard todayTasks={todayTasks} upcomingTasks={upcomingTasks}/>
-                <TodayTask setShowUpdateTaskForm={setShowUpdateTaskForm}/>
-                <UpcomingTask setShowUpdateTaskForm={setShowUpdateTaskForm}/>
+                <TodayTask setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
+                <UpcomingTask setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
             </ScrollView> 
             {showUpdateTaskForm && (
-                <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} />
+                <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} taskId={taskId}/>
             )}
         </>
         
