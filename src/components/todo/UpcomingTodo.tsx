@@ -2,12 +2,18 @@ import { commonStyles} from "@/styles/common";
 import { todo } from "@/styles/todoStyles";
 import { ScrollView, StyleSheet, Text, View, Pressable, Modal } from "react-native";
 import { TaskList } from "../taskWork/TaskList";
-import { useTasks } from "@/context/taskContext";
+import { useUpcomingTasks } from "@/context/taskContext";
 import { useState } from "react";
+import { handleDeleteTask } from "@/utility/deleteFunction";
+import { handleEditTask } from "@/utility/updateFunction";
 
+type TodayTaskProps = {
+  setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setTaskId: React.Dispatch<React.SetStateAction<number>>;
+};
 
-export default function UpcomingTodo() {
-  const { upcomingTasks } = useTasks();
+export default function UpcomingTodo({ setShowUpdateTaskForm, setTaskId }: TodayTaskProps) {
+  const { upcomingTasks, updateUpcomingTask } = useUpcomingTasks();
 
   const [showAllUpcoming, setShowAllUpcoming] = useState(false)
 
@@ -29,7 +35,7 @@ export default function UpcomingTodo() {
           </Pressable>
         </View>  
           <View>  
-            <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks.slice(0,5)}/>
+            <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks.slice(0,5)} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateUpcomingTask })} />
           </View>
       </ScrollView>
       <Modal visible={showAllUpcoming} onRequestClose={() => setShowAllUpcoming(false)} animationType="slide">
@@ -42,7 +48,7 @@ export default function UpcomingTodo() {
             </Pressable>
           </View>
           <ScrollView>
-            <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks}/>
+            <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateUpcomingTask })} />
           </ScrollView>
         </View>
       </Modal>

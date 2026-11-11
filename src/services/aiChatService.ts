@@ -23,10 +23,15 @@ export function getAITasks(): AITask[] {
   `);
 }
 
-export async function processChatMessage(message: string): Promise<AIAction> {
+export type ConversationMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export async function processChatMessage(message: string, conversationHistory: ConversationMessage[] = []): Promise<AIAction> {
   const tasks = getAITasks();
 
-  return askGemini(message, tasks, getTodayDateSQL());
+  return askGemini(conversationHistory, message, tasks, getTodayDateSQL());
 }
 
 export function confirmTaskAction(action: AIAction): string {

@@ -1,17 +1,22 @@
 import { Task } from "@/types/taskType";
 import { timeToMinutes } from "./timeFormat";
+import { fetchAllTasks } from "@/database/taskFunction";
+
 
 type TimeConflictProps = {
-  todayTasks: Task[];
+  selectedDate: string;
   newStartTime: string;
   newEndTime: string;
 };
 
 export function timeConflict({
-  todayTasks,
+  selectedDate,
   newStartTime,
   newEndTime,
 }: TimeConflictProps): boolean {
+
+  const allTasks: Task[] = fetchAllTasks();
+
   const newStart = timeToMinutes(newStartTime);
   const newEnd = timeToMinutes(newEndTime);
 
@@ -23,7 +28,11 @@ export function timeConflict({
     return false;
   }
 
-  return todayTasks.some((task) => {
+  return allTasks.some((task) => {
+     if (task.date !== selectedDate) {
+      return false;
+    }
+
     if (task.time == null || task.endTime == null) {
       return false;
     }

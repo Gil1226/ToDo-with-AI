@@ -71,7 +71,8 @@ export default function AIChatbot({
 
   async function sendMessage() {
     const message = input.trim();
-
+    console.log("Sending message:", message); 
+    console.log("Current messages:", messages);
     if (!message || loading) return;
 
     setInput("");
@@ -79,7 +80,12 @@ export default function AIChatbot({
     setLoading(true);
 
     try {
-      const action = await processChatMessage(message);
+      const conversationHistory = messages.map((item) => ({
+        role: item.role,
+        content: item.text,
+      }));
+
+      const action = await processChatMessage(message, conversationHistory);
 
       if (action.type === "create_task" ||
           action.type === "reschedule_task") {

@@ -1,13 +1,16 @@
 import { View, Text } from "react-native";
 import {TaskCard} from "./TaskCard"
 import { Task } from "@/types/taskType";
+import TaskActionMenu from "./TaskActionMenu";
 
 type TaskListProp = {
-    emptyMessage: string,
-    allTask: Task[],
+    emptyMessage: string;
+    allTask: Task[];
+    onEditTask: (taskId: number) => void;
+    onDeleteTask: (taskId: number) => void;
 }
 
-export function TaskList({emptyMessage, allTask} : TaskListProp){
+export function TaskList({emptyMessage, allTask, onEditTask, onDeleteTask} : TaskListProp){
 
     if (allTask.length === 0 ) {
         return <Text>{emptyMessage}</Text>;
@@ -18,11 +21,13 @@ export function TaskList({emptyMessage, allTask} : TaskListProp){
             <View>
                 <View>
                     {allTask.map(task => (
-                        <TaskCard
+                        <TaskActionMenu
                             key={task.id}
-                            {...task}
-
-                        />
+                            onEdit={() => onEditTask(task.id)}
+                            onDelete={() => onDeleteTask(task.id)}
+                        >
+                            <TaskCard {...task} />
+                        </TaskActionMenu>
                     ))}
                 </View>
             </View>

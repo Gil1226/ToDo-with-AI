@@ -1,26 +1,37 @@
 import { fetchHistory, fetchToday, fetchUpcomming } from "@/database/taskFunction";
 import { Task } from "@/types/taskType"
-import { useContext, createContext, useEffect, useState, useCallback } from "react"
+import { useContext, createContext, useEffect, useState, useCallback, useMemo } from "react"
 
 
-type  taskContextType = {
+// TYPES
+type TodayContextType = {
     todayTasks: Task[];
     updateTodayTask: () => Promise<void>;
     setTodayTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+};
 
+type UpcomingContextType = {
     upcomingTasks: Task[];
     updateUpcomingTask: () => Promise<void>;
     setUpcomingTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+};
 
+type HistoryContextType = {
     historyTasks: Task[];
     updateHistoryTask: () => Promise<void>;
     setHistoryTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 };
 
-const TaskContext = createContext<taskContextType | null>(null);
+// CONTEXTS
+const TodayContext = createContext<TodayContextType | null>(null);
+const UpcomingContext = createContext<UpcomingContextType | null>(null);
+const HistoryContext = createContext<HistoryContextType | null>(null);
+
 
 export function TaskProvider({ children }: {children: React.ReactNode}){
     const[loading, setLoading] = useState(false);
+
+
 
     const [todayTasks, setTodayTasks] = useState<Task[]>([]);
 
@@ -30,6 +41,8 @@ export function TaskProvider({ children }: {children: React.ReactNode}){
         console.log("down")
     }, []);
 
+
+
     const [upcomingTasks, setUpcomingTasks] = useState<Task[]>([]);
 
     const updateUpcomingTask = useCallback(async () => {
@@ -38,42 +51,94 @@ export function TaskProvider({ children }: {children: React.ReactNode}){
         console.log("up")
     }, [])
 
+
+
     const [historyTasks, setHistoryTasks] = useState<Task[]>([]);
 
-    const updateHistoryTask = async () => {
+    const updateHistoryTask = useCallback(async () => {
         const data = await fetchHistory();
-        setHistoryTasks(data)
-    }
-    const refreshTasks = useCallback(async () => {
-        setLoading(true);
+        setHistoryTasks(data);
+    }, []);
 
-        try {
+
+
+    const refreshTasks = useCallback(async () => {
         await Promise.all([
             updateTodayTask(),
             updateUpcomingTask(),
             updateHistoryTask(),
         ]);
-        } finally {
-        setLoading(false);
-        }
-    }, [updateTodayTask, updateUpcomingTask]);
+    }, [updateTodayTask, updateUpcomingTask, updateHistoryTask]);
+
+
+    const todayValue = useMemo(() => ({
+        todayTasks,
+        updateTodayTask,
+        setTodayTasks,
+    }), [todayTasks, updateTodayTask]);
+
+    const upcomingValue = useMemo(() => ({
+        upcomingTasks,
+        updateUpcomingTask,
+        setUpcomingTasks,
+    }), [upcomingTasks, updateUpcomingTask]);
+
+    const historyValue = useMemo(() => ({
+        historyTasks,
+        updateHistoryTask,
+        setHistoryTasks,
+    }), [historyTasks, updateHistoryTask]);
+
+
 
     useEffect(() => {
         void refreshTasks()
     }, [refreshTasks])
 
+
+
+
     return(
-        <TaskContext.Provider value={{todayTasks, updateTodayTask, setTodayTasks, upcomingTasks, updateUpcomingTask, setUpcomingTasks, historyTasks, updateHistoryTask, setHistoryTasks}}>
-            {children}
-        </TaskContext.Provider>
+        <TodayContext.Provider value={todayValue}>
+            <UpcomingContext.Provider value={upcomingValue}>
+                <HistoryContext.Provider value={historyValue}>
+                    {children}
+                </HistoryContext.Provider>
+            </UpcomingContext.Provider>
+        </TodayContext.Provider>
     )
 }
 
-export function useTasks() { 
-    const context = useContext(TaskContext);
+// TODAY HOOK
+export function useTodayTasks() {
+    const context = useContext(TodayContext);
 
     if (!context) {
-        throw new Error("useTasks must be used inside TaskProvider");
+        throw new Error("useTodayTasks must be used inside TaskProvider");
+    }
+
+    return context;
+}
+
+
+// UPCOMING HOOK
+export function useUpcomingTasks() {
+    const context = useContext(UpcomingContext);
+
+    if (!context) {
+        throw new Error("useUpcomingTasks must be used inside TaskProvider");
+    }
+
+    return context;
+}
+
+
+// HISTORY HOOK
+export function useHistoryTasks() {
+    const context = useContext(HistoryContext);
+
+    if (!context) {
+        throw new Error("useHistoryTasks must be used inside TaskProvider");
     }
 
     return context;

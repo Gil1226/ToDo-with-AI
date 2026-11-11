@@ -12,6 +12,7 @@ import { commonStyles } from '@/styles/common';
 import { CreateTaskForm } from '@/components/taskWork/CreateTaskForm';
 import { useState } from 'react';
 import { distinctCategory } from "@/database/taskFunction"
+import {UpdateTaskForm} from '@/components/taskWork/UpdateTaskForm';
 
 
 export default function todo() {
@@ -19,7 +20,9 @@ export default function todo() {
   const [showAIChatbot, setShowAIChatbot] = useState(false);
   const [segment, setSegment] = useState<"active" | "history">("active")
   const [activeCategory, setActiveCategory] = useState("All");
-
+  const [taskId, setTaskId] = useState<number>(0);   
+  
+  const [showUpdateTaskForm, setShowUpdateTaskForm] = useState(false);
 
   return (
     <View style={commonStyles.container}>
@@ -28,13 +31,13 @@ export default function todo() {
           <ScrollView >
             <SegmentControl segment={segment} setSegment={setSegment}/>
             <CategoryFilter fetchedCategories={distinctCategory()} onSelectCategory={setActiveCategory}/>
-            <TodayTodo activeCategory={activeCategory}/>
-            <UpcomingTodo/>
+            <TodayTodo activeCategory={activeCategory} setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
+            <UpcomingTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
           </ScrollView>
           :
           <ScrollView>
             <SegmentControl segment={segment} setSegment={setSegment}/>
-            <HistoryTodo/>
+            <HistoryTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
           </ScrollView>
         }
             
@@ -44,6 +47,10 @@ export default function todo() {
       : 
         <CreateTaskForm setShowCreateTaskForm={setShowCreateTaskForm}/>
       }
+      
+      {showUpdateTaskForm && (
+        <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} taskId={taskId}/>
+      )}
       
       <AIChatbotBtn onPress={() => setShowAIChatbot(true)}/>
       <AIChatbotModal visible={showAIChatbot} onClose={() => setShowAIChatbot(false)}/>

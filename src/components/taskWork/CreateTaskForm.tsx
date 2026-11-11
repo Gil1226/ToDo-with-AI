@@ -3,7 +3,7 @@ import DateField from "@/components/taskWork/createTaskComponent/Date";
 import StartTime from "@/components/taskWork/createTaskComponent/StartTime";
 import EndTime from "@/components/taskWork/createTaskComponent/EndTime";
 import Title from "@/components/taskWork/createTaskComponent/Title";
-import { useTasks } from "@/context/taskContext";
+import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";
 import { createTask } from "@/database/taskFunction";
 import { commonStyles } from "@/styles/common";
 import { getTodayDate } from "@/utility/dateFormat";
@@ -17,7 +17,8 @@ type CreateTaskFormProps = {
 };
 
 export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
-  const { updateTodayTask, todayTasks, updateUpcomingTask, upcomingTasks } = useTasks();
+  const { updateTodayTask, todayTasks } = useTodayTasks();
+  const { updateUpcomingTask, upcomingTasks } = useUpcomingTasks();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -57,7 +58,7 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
       return;
     }
     const hasConflict = timeConflict({
-      todayTasks,
+      selectedDate: formData.date,
       newStartTime: formData.time,
       newEndTime: formData.endTime,
     });

@@ -4,8 +4,14 @@ import { prompt } from "./prompt";
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 const MODEL = "gemini-3.5-flash-lite";
 
+export type ConversationMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 export async function askGemini(
-  userMessage: string,
+  conversationHistory: ConversationMessage[] = [],
+  message: string,
   tasks: AITask[],
   today: string,
 ): Promise<AIAction> {
@@ -26,7 +32,7 @@ export async function askGemini(
         contents: [
           {
             role: "user",
-            parts: [{ text: prompt({userMessage, tasks, today}) }],
+            parts: [{ text: prompt({message,conversationHistory, tasks, today}) }],
           },
         ],
         generationConfig: {
