@@ -14,7 +14,6 @@ export default function TabLayout() {
     //createTask("Read a book", "21:00", "2026-10-22", "Personal");
 
     //createTask("Finish project", "14:00", "2026-10-22", "School");
-    console.log(fetchAllTasks());
   }, [])
   return (
     <GestureHandlerRootView>

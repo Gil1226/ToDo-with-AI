@@ -1,10 +1,11 @@
+import { Task } from "@/types/taskType";
 type UpdateTaskFormProps = {
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
-  taskId: number;
-  setTaskId: React.Dispatch<React.SetStateAction<number>>;
+  task: Task;
+  setTask: React.Dispatch<React.SetStateAction<Task | null>>;
 };
 
-export const handleEditTask = ({taskId, setShowUpdateTaskForm, setTaskId}: UpdateTaskFormProps) => {
+export const handleEditTask = ({task, setShowUpdateTaskForm, setTask}: UpdateTaskFormProps) => {
     setShowUpdateTaskForm(true);
-    setTaskId(taskId);
+    setTask(task);
 };

@@ -13,7 +13,7 @@ type CategoryProps = {
     setShowCategoryPicker: (value: boolean) => void;
 };
 
-export default function Category({ formData, updateForm, showCategoryPicker, setShowCategoryPicker }: CategoryProps) {
+export default function Category({ formData, updateForm, showCategoryPicker, setShowCategoryPicker}: CategoryProps) {
 
     const [newCategory, setNewCategory] = useState("");
 

@@ -10,11 +10,11 @@ import { handleEditTask } from "@/utility/updateFunction";
 
 type TodayTaskProps = {
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
-  setTaskId: React.Dispatch<React.SetStateAction<number>>;
+  setTask: React.Dispatch<React.SetStateAction<Task | null>>;
 };
 
 
-export default function HistoryTodo({ setShowUpdateTaskForm, setTaskId }: TodayTaskProps) {
+export default function HistoryTodo({ setShowUpdateTaskForm, setTask }: TodayTaskProps) {
     const { historyTasks, updateHistoryTask } = useHistoryTasks();
     const [activeCategory, setActiveCategory] = useState("All");
 
@@ -31,7 +31,7 @@ export default function HistoryTodo({ setShowUpdateTaskForm, setTaskId }: TodayT
         <ScrollView>
             <SearchBar/>
             <CategoryFilter fetchedCategories={fetchedCategories} onSelectCategory={setActiveCategory}/>
-            <TaskList emptyMessage={"You don't have past Task"} allTask={filteredTasks}  onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateHistoryTask })}/>
+            <TaskList emptyMessage={"You don't have past Task"} allTask={filteredTasks}  onEditTask={(task) => handleEditTask({ task, setShowUpdateTaskForm, setTask })} onDeleteTask={(task) => handleDeleteTask({ task, refresh:updateHistoryTask })}/>
         </ScrollView>
     );
 }

@@ -6,7 +6,7 @@ type TitleProps = {
     formData: {
         title: string;
     };
-    updateForm: (field: string, value: string) => void;
+    updateForm: (field: string, value: string) => void;        
 };
 
 export default function Title({formData, updateForm}: TitleProps) {

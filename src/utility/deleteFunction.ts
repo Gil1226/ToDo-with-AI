@@ -1,13 +1,13 @@
 import { deleteTask } from "@/database/taskFunction";
 import {Task} from "@/types/taskType";
 type HandleDeleteTaskProps = {
-    taskId: number;
+    task: Task;
     refresh: () => Promise<void>;
 };
 
-export const handleDeleteTask = async ({ taskId, refresh }: HandleDeleteTaskProps) => {
+export const handleDeleteTask = async ({ task, refresh }: HandleDeleteTaskProps) => {
     try {
-        deleteTask(taskId);
+        deleteTask(task.id);
         await refresh();
     } catch (error) {
         console.error("Failed to delete task:", error);

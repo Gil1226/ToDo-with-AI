@@ -11,28 +11,31 @@ import { timeConflict } from "@/utility/timeConflict";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import Importance from "./taskManipulationComponent/Importance";
+import { Task } from "@/types/taskType";
 
 type CreateTaskFormProps = {
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
-  taskId: number;
+  task: Task | null;
 };
 
 export function UpdateTaskForm({
   setShowUpdateTaskForm,
-  taskId,
+  task,
 }: CreateTaskFormProps) {
   const { updateTodayTask } = useTodayTasks();
   const { updateUpcomingTask } = useUpcomingTasks();
 
   const [formData, setFormData] = useState({
-    title: "",
-    time: "",
-    endTime: "",
-    date: getTodayDate(),
-    category: "",
+    title: task?.title ?? "",
+    time: task?.time ?? "",
+    endTime: task?.endTime ?? "",
+    date: task?.date ?? getTodayDate(),
+    category: task?.category ?? "",
+    isImportant: task?.isImportant ?? false,
   });
 
-  const updateForm = (field: string, value: string) => {
+  const updateForm = (field: string, value: string | boolean) => {
     setFormData({
       ...formData,
       [field]: value,
@@ -78,7 +81,7 @@ export function UpdateTaskForm({
 
     const [month, day, year] = formData.date.split("/");
     const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    updateTask(formattedDate, formData.time, formData.endTime, taskId);
+    updateTask(formattedDate, formData.time, formData.endTime, task?.id ?? 0);
     updateTodayTask();
     updateUpcomingTask();
     setShowUpdateTaskForm(false);
@@ -94,7 +97,10 @@ export function UpdateTaskForm({
           </Pressable>
         </View>
 
-        <Title formData={formData} updateForm={updateForm} />
+        <Title 
+          formData={formData} 
+          updateForm={updateForm} 
+        />
         <StartTime
           formData={formData}
           updateForm={updateForm}
@@ -111,13 +117,17 @@ export function UpdateTaskForm({
           formData={formData}
           updateForm={updateForm}
           showDatePicker={showDatePicker}
-          setShowDatePicker={setShowDatePicker}
+          setShowDatePicker={setShowDatePicker}    
         />
         <Category
           formData={formData}
           updateForm={updateForm}
           showCategoryPicker={showCategoryPicker}
           setShowCategoryPicker={setShowCategoryPicker}
+        />
+        <Importance 
+          formData={formData}
+          updateForm={updateForm}
         />
         <Pressable style={styles.saveButton} onPress={handleUpdateTask}>
           <Text style={styles.saveText}>Confirm</Text>

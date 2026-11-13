@@ -11,10 +11,10 @@ import { handleEditTask } from "@/utility/updateFunction";
 type props = {
   activeCategory: string
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
-  setTaskId: React.Dispatch<React.SetStateAction<number>>;
+  setTask: React.Dispatch<React.SetStateAction<Task | null>>;
 }
 
-export default function TodayTodo({activeCategory, setShowUpdateTaskForm, setTaskId}: props) {
+export default function TodayTodo({activeCategory, setShowUpdateTaskForm, setTask}: props) {
   const{ todayTasks, updateTodayTask } = useTodayTasks();
 
   const [showAllToday, setShowAllToday] = useState(false)
@@ -45,7 +45,7 @@ export default function TodayTodo({activeCategory, setShowUpdateTaskForm, setTas
           </Pressable>
         </View>  
           <View>  
-            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={filteredTasks.slice(0,5)} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateTodayTask })} />
+            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={filteredTasks.slice(0,5)} onEditTask={(task) => handleEditTask({ task, setShowUpdateTaskForm, setTask })} onDeleteTask={(task) => handleDeleteTask({ task, refresh:updateTodayTask })} />
           </View>
       </ScrollView>
 
@@ -59,7 +59,7 @@ export default function TodayTodo({activeCategory, setShowUpdateTaskForm, setTas
             </Pressable>
           </View>
           <ScrollView>
-            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks} onEditTask={(taskId) => handleEditTask({ taskId, setShowUpdateTaskForm, setTaskId })} onDeleteTask={(taskId) => handleDeleteTask({ taskId, refresh:updateTodayTask })} />
+            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks} onEditTask={(task) => handleEditTask({ task, setShowUpdateTaskForm, setTask })} onDeleteTask={(task) => handleDeleteTask({ task, refresh:updateTodayTask })} />
           </ScrollView>
         </View>
       </Modal>

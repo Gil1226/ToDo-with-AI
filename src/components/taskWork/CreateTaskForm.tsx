@@ -100,7 +100,10 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
           </Pressable>
         </View>
 
-        <Title formData={formData} updateForm={updateForm} />
+        <Title 
+          formData={formData} 
+          updateForm={updateForm} 
+        />
         <StartTime
           formData={formData}
           updateForm={updateForm}

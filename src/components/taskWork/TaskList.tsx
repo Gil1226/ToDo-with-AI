@@ -6,8 +6,8 @@ import TaskActionMenu from "./TaskActionMenu";
 type TaskListProp = {
     emptyMessage: string;
     allTask: Task[];
-    onEditTask: (taskId: number) => void;
-    onDeleteTask: (taskId: number) => void;
+    onEditTask: (task: Task) => void;
+    onDeleteTask: (task: Task) => void;
 }
 
 export function TaskList({emptyMessage, allTask, onEditTask, onDeleteTask} : TaskListProp){
@@ -17,19 +17,18 @@ export function TaskList({emptyMessage, allTask, onEditTask, onDeleteTask} : Tas
     }
 
     return(
-        
+        <View>
             <View>
-                <View>
-                    {allTask.map(task => (
-                        <TaskActionMenu
-                            key={task.id}
-                            onEdit={() => onEditTask(task.id)}
-                            onDelete={() => onDeleteTask(task.id)}
-                        >
-                            <TaskCard {...task} />
-                        </TaskActionMenu>
-                    ))}
-                </View>
+                {allTask.map(task => (
+                    <TaskActionMenu
+                        key={task.id}
+                        onEdit={() => onEditTask(task)}
+                        onDelete={() => onDeleteTask(task)}
+                    >
+                        <TaskCard {...task} />
+                    </TaskActionMenu>
+                ))}
             </View>
+        </View>
     )
 }

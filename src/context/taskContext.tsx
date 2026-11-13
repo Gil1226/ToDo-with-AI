@@ -109,7 +109,7 @@ export function TaskProvider({ children }: {children: React.ReactNode}){
     )
 }
 
-// TODAY HOOK
+// TODAY
 export function useTodayTasks() {
     const context = useContext(TodayContext);
 
@@ -121,7 +121,7 @@ export function useTodayTasks() {
 }
 
 
-// UPCOMING HOOK
+// UPCOMING
 export function useUpcomingTasks() {
     const context = useContext(UpcomingContext);
 
@@ -133,7 +133,7 @@ export function useUpcomingTasks() {
 }
 
 
-// HISTORY HOOK
+// HISTORY
 export function useHistoryTasks() {
     const context = useContext(HistoryContext);
 

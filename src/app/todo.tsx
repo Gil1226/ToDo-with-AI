@@ -7,7 +7,7 @@ import SegmentControl from '@/components/todo/SegmentControl';
 import HistoryTodo from '@/components/todo/HistoryTodo';
 import AIChatbotModal from "@/components/todo/AIChatbotModal";
 import AIChatbotBtn from '@/components/todo/AIChatbotBtn';
-
+import {Task} from '@/types/taskType';
 import { commonStyles } from '@/styles/common';
 import { CreateTaskForm } from '@/components/taskWork/CreateTaskForm';
 import { useState } from 'react';
@@ -20,7 +20,7 @@ export default function todo() {
   const [showAIChatbot, setShowAIChatbot] = useState(false);
   const [segment, setSegment] = useState<"active" | "history">("active")
   const [activeCategory, setActiveCategory] = useState("All");
-  const [taskId, setTaskId] = useState<number>(0);   
+  const [task, setTask] = useState<Task | null>(null);
   
   const [showUpdateTaskForm, setShowUpdateTaskForm] = useState(false);
 
@@ -31,13 +31,13 @@ export default function todo() {
           <ScrollView >
             <SegmentControl segment={segment} setSegment={setSegment}/>
             <CategoryFilter fetchedCategories={distinctCategory()} onSelectCategory={setActiveCategory}/>
-            <TodayTodo activeCategory={activeCategory} setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
-            <UpcomingTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
+            <TodayTodo activeCategory={activeCategory} setShowUpdateTaskForm={setShowUpdateTaskForm} setTask={setTask}/>
+            <UpcomingTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTask={setTask}/>
           </ScrollView>
           :
           <ScrollView>
             <SegmentControl segment={segment} setSegment={setSegment}/>
-            <HistoryTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
+            <HistoryTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTask={setTask}/>
           </ScrollView>
         }
             
@@ -49,7 +49,7 @@ export default function todo() {
       }
       
       {showUpdateTaskForm && (
-        <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} taskId={taskId}/>
+        <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} task={task}/>
       )}
       
       <AIChatbotBtn onPress={() => setShowAIChatbot(true)}/>

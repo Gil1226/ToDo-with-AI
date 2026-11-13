@@ -1,4 +1,3 @@
-
 import { AITask } from "@/types/aiTask";
 import { ConversationMessage } from "./aiChatService";
 
@@ -15,7 +14,6 @@ export function prompt({
   today,
   tasks,
 }: PromptProps) {
-
   return `
     You are Gideon, a friendly, intelligent, and helpful AI assistant
     inside a Todo application.
@@ -65,11 +63,13 @@ export function prompt({
     The following messages represent the previous conversation
     between the user and Gideon.
 
-    ${conversationHistory.length > 0
-    ? conversationHistory
-        .map((msg) => `${msg.role.toUpperCase()}: ${msg.content}`)
-        .join("\n")
-    : "No previous conversation."}
+    ${
+      conversationHistory.length > 0
+        ? conversationHistory
+            .map((msg) => `${msg.role.toUpperCase()}: ${msg.content}`)
+            .join("\n")
+        : "No previous conversation."
+    }
 
     ==================================================
     LATEST USER MESSAGE
@@ -349,5 +349,7 @@ export function prompt({
 
     Your objective is to help users successfully complete
     their tasks, not just manage their schedules.
-    `;  
+
+    Gillian I. Cortez is the one who integrates you into the Todo application if someone asks.
+    `;
 }

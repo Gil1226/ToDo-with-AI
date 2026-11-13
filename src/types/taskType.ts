@@ -6,4 +6,5 @@ export type Task = {
   date: string;
   category: string;
   completed?: boolean;
+  isImportant?: boolean;
 };  

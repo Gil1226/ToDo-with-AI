@@ -8,11 +8,12 @@ import UpcomingTask from "@/components/dashboard/UpcomingTask";
 import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";
 import { useState } from "react";
 import { UpdateTaskForm } from "@/components/taskWork/UpdateTaskForm";
+import { Task } from "@/types/taskType";
 
 
 export default function DashboardScreen() {
     const [showUpdateTaskForm, setShowUpdateTaskForm] = useState(false);
-    const [taskId, setTaskId] = useState<number>(0);   
+    const [task, setTask] = useState<Task | null>(null);   
     const {todayTasks} = useTodayTasks();
     const {upcomingTasks} = useUpcomingTasks();
 
@@ -21,11 +22,11 @@ export default function DashboardScreen() {
             <ScrollView style={commonStyles.container}>
                 <DashboardHeader/>
                 <ProgressCard todayTasks={todayTasks} upcomingTasks={upcomingTasks}/>
-                <TodayTask setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
-                <UpcomingTask setShowUpdateTaskForm={setShowUpdateTaskForm} setTaskId={setTaskId}/>
+                <TodayTask setShowUpdateTaskForm={setShowUpdateTaskForm} setTask={setTask}/>
+                <UpcomingTask setShowUpdateTaskForm={setShowUpdateTaskForm} setTask={setTask}/>
             </ScrollView> 
             {showUpdateTaskForm && (
-                <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} taskId={taskId}/>
+                <UpdateTaskForm setShowUpdateTaskForm={setShowUpdateTaskForm} task={task}/>
             )}
         </>
         
