@@ -31,14 +31,11 @@ const HistoryContext = createContext<HistoryContextType | null>(null);
 export function TaskProvider({ children }: {children: React.ReactNode}){
     const[loading, setLoading] = useState(false);
 
-
-
     const [todayTasks, setTodayTasks] = useState<Task[]>([]);
 
     const updateTodayTask = useCallback(async () => {
         const data = await fetchToday();
         setTodayTasks(data);
-        console.log("down")
     }, []);
 
 
@@ -48,7 +45,6 @@ export function TaskProvider({ children }: {children: React.ReactNode}){
     const updateUpcomingTask = useCallback(async () => {
         const data = fetchUpcomming();
         setUpcomingTasks(data)
-        console.log("up")
     }, [])
 
 

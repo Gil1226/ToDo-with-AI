@@ -6,13 +6,14 @@ import Title from "@/components/taskWork/taskManipulationComponent/Title";
 import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";
 import { updateTask } from "@/database/taskFunction";
 import { commonStyles } from "@/styles/common";
-import { getTodayDate } from "@/utility/dateFormat";
+import { getTodayDate, formatDateToISO } from "@/utility/dateFormat";
 import { timeConflict } from "@/utility/timeConflict";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import Importance from "./taskManipulationComponent/Importance";
 import { Task } from "@/types/taskType";
+
 
 type CreateTaskFormProps = {
   setShowUpdateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,12 +31,12 @@ export function UpdateTaskForm({
     title: task?.title ?? "",
     time: task?.time ?? "",
     endTime: task?.endTime ?? "",
-    date: task?.date ?? getTodayDate(),
+    date: getTodayDate(),
     category: task?.category ?? "",
-    isImportant: task?.isImportant ?? false,
+    isImportant: task?.isImportant ?? 0,
   });
 
-  const updateForm = (field: string, value: string | boolean) => {
+  const updateForm = (field: string, value: string | number) => {
     setFormData({
       ...formData,
       [field]: value,
@@ -68,6 +69,7 @@ export function UpdateTaskForm({
       selectedDate: formData.date,
       newStartTime: formData.time,
       newEndTime: formData.endTime,
+      taskId: task?.id,
     });
 
     console.log(hasConflict, "conflict");
@@ -81,7 +83,7 @@ export function UpdateTaskForm({
 
     const [month, day, year] = formData.date.split("/");
     const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    updateTask(formattedDate, formData.time, formData.endTime, task?.id ?? 0);
+    updateTask(formattedDate, formData.time, formData.endTime, task?.id ?? 0, formData.isImportant);
     updateTodayTask();
     updateUpcomingTask();
     setShowUpdateTaskForm(false);

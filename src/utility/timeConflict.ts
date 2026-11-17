@@ -7,12 +7,14 @@ type TimeConflictProps = {
   selectedDate: string;
   newStartTime: string;
   newEndTime: string;
+  taskId?: number;
 };
 
 export function timeConflict({
   selectedDate,
   newStartTime,
   newEndTime,
+  taskId,
 }: TimeConflictProps): boolean {
 
   const allTasks: Task[] = fetchAllTasks();
@@ -29,6 +31,10 @@ export function timeConflict({
   }
 
   return allTasks.some((task) => {
+    if (taskId !== undefined && task.id === taskId) {
+      return false;
+    }
+    
      if (task.date !== selectedDate) {
       return false;
     }

@@ -15,14 +15,14 @@ type UpcomingTaskProps = {
 
 export default function UpcomingTask({ setShowUpdateTaskForm, setTask }: UpcomingTaskProps) {
   const { upcomingTasks, updateUpcomingTask } = useUpcomingTasks();
+  const importantTasks = upcomingTasks.filter(task => task.isImportant === 1);
   return (
     <View style={commonStyles.componentContainer}>
       <View style={commonStyles.cardHeaderLayout}>
-        <Text style={commonStyles.cardHeader}>Upcoming Tasks</Text>
-        <Link href={"/"}>➜</Link>
+        <Text style={commonStyles.cardHeader}>Upcoming Important Tasks</Text>
       </View>
       <View style={commonStyles.card}>
-        <TaskList emptyMessage="No more upcoming task" allTask={upcomingTasks.slice(0,5)} onEditTask={(task) => handleEditTask({ task, setShowUpdateTaskForm, setTask })} onDeleteTask={(task) => handleDeleteTask({ task, refresh:updateUpcomingTask })} />
+        <TaskList emptyMessage="No more upcoming important tasks" allTask={importantTasks.slice(0,5)} onEditTask={(task) => handleEditTask({ task, setShowUpdateTaskForm, setTask })} onDeleteTask={(task) => handleDeleteTask({ task, refresh:updateUpcomingTask })} />
       </View>
     </View>
   );

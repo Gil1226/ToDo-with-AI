@@ -55,8 +55,6 @@ export function fetchHistory() {
 
 
 
-
-
 export function createTask(
   title: string,
   time: string,
@@ -80,15 +78,15 @@ export function createTask(
 
 
 
-
-export function updateTask(date: string, time: string, endTime: string, taskId: number) {
+export function updateTask(date: string, time: string, endTime: string, taskId: number, isImportant: number) {
   return db.runSync(
-    `UPDATE tasks SET date = ?, time = ?, endTime = ?
+    `UPDATE tasks SET date = ?, time = ?, endTime = ?, isImportant = ?
       WHERE id = ? AND completed = 0`,
     date,
     time,
     endTime,
     taskId,
+    isImportant
   );
 } 
 

@@ -82,7 +82,7 @@ export function confirmTaskAction(action: AIAction): string {
       throw new Error("End time must be later than start time.");
     }
 
-    const result = updateTask(action.date, newTime, newEndTime, action.taskId)
+    const result = updateTask(action.date, newTime, newEndTime, action.taskId, task.isImportant);
 
     if (result.changes === 0) {
       throw new Error(

@@ -27,10 +27,10 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
     endTime: "",
     date: getTodayDate(),
     category: "",
-    isImportant: false, 
+    isImportant: 0,
   });
 
-  const updateForm = (field: string, value: string | boolean) => {
+  const updateForm = (field: string, value: string | number) => {
     setFormData({
       ...formData,
       [field]: value,

@@ -4,6 +4,7 @@ import { formatMDY } from "@/utility/dateFormat";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Task } from "../../types/taskType";
+import { colors } from "@/styles/colors";
 
 export function TaskCard({
   id,
@@ -13,6 +14,7 @@ export function TaskCard({
   date,
   category,
   completed = false,
+  isImportant = 0,
 }: Task) {
   const { todayTasks, updateTodayTask } = useTodayTasks();
   const { upcomingTasks, updateUpcomingTask } = useUpcomingTasks();
@@ -74,6 +76,8 @@ export function TaskCard({
               isCompleted
                 ? styles.categoryCompleted
                 : styles.categoryIncomplete,
+
+              isImportant === 1 && { backgroundColor: colors.important },
             ]}
           >
             <Text

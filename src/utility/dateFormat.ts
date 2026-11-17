@@ -49,3 +49,13 @@ export function getTimePeriod(date: Date = new Date()) {
   if (hour >= 12 && hour < 17) return "Afternoon";
   return "Evening";
 }
+
+export function formatDateToISO(date: string): string {
+  if (date.includes("-")) {
+    return date;
+  }
+
+  const [month, day, year] = date.split("/");
+
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+}
