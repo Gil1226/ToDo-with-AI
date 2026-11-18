@@ -1,8 +1,20 @@
-
-import { useState } from "react";
-import { ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View, Alert} from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Keyboard,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { AIAction } from "@/types/chatTypes";
-import {confirmTaskAction, processChatMessage} from "@/services/aiChatService";
+import { confirmTaskAction, processChatMessage } from "@/services/aiChatService";
 import { colors } from "@/styles/colors";
 
 type ChatMessage = {
@@ -14,6 +26,9 @@ type ChatMessage = {
 type Props = {
   onTasksChanged?: () => void;
 };
+
+// Darker sage so white text passes contrast on the user bubble and buttons.
+const SAGE_DEEP = "#66754D";
 
 function describeAction(action: AIAction): string {
   if (action.type === "create_task") {
@@ -40,9 +55,10 @@ function describeAction(action: AIAction): string {
   return action.message;
 }
 
-export default function AIChatbot({
-  onTasksChanged,
-}: Props) {
+export default function AIChatbot({ onTasksChanged }: Props) {
+  const insets = useSafeAreaInsets();
+  const listRef = useRef<FlatList<ChatMessage>>(null);
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "welcome",
@@ -55,8 +71,27 @@ export default function AIChatbot({
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [pendingAction, setPendingAction] =
-    useState<AIAction | null>(null);
+  const [pendingAction, setPendingAction] = useState<AIAction | null>(null);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  // While the keyboard is open the home indicator is covered,
+  // so the extra bottom inset would just be a visible gap.
+  useEffect(() => {
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const show = Keyboard.addListener(showEvent, () => setKeyboardVisible(true));
+    const hide = Keyboard.addListener(hideEvent, () => setKeyboardVisible(false));
+
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+
+  function scrollToLatest() {
+    listRef.current?.scrollToEnd({ animated: true });
+  }
 
   function addMessage(role: ChatMessage["role"], text: string) {
     setMessages((current) => [
@@ -71,9 +106,8 @@ export default function AIChatbot({
 
   async function sendMessage() {
     const message = input.trim();
-    console.log("Sending message:", message); 
-    console.log("Current messages:", messages);
-    if (!message || loading) return;
+
+    if (!message || loading || pendingAction) return;
 
     setInput("");
     addMessage("user", message);
@@ -87,24 +121,23 @@ export default function AIChatbot({
 
       const action = await processChatMessage(message, conversationHistory);
 
-      if (action.type === "create_task" ||
-          action.type === "reschedule_task") {
+      if (action.type === "create_task" || action.type === "reschedule_task") {
         setPendingAction(action);
         addMessage(
           "assistant",
           `${action.message}\n\n${describeAction(action)}\n\n` +
-          "Please confirm or cancel this change."
+            "Please confirm or cancel this change.",
         );
       } else {
         addMessage("assistant", action.message);
       }
     } catch (error) {
-      const message =
+      const errorMessage =
         error instanceof Error
           ? error.message
           : "Something went wrong. Please try again.";
 
-      addMessage("assistant", `Sorry, ${message}`);
+      addMessage("assistant", `Sorry, ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -121,12 +154,10 @@ export default function AIChatbot({
 
       onTasksChanged?.();
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Unable to save this change.";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unable to save this change.";
 
-      Alert.alert("Could not save task", message);
+      Alert.alert("Could not save task", errorMessage);
     }
   }
 
@@ -135,48 +166,45 @@ export default function AIChatbot({
     addMessage("assistant", "Okay, I cancelled that change.");
   }
 
-  return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-    >
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>AI Todo Assistant</Text>
-        <Text style={styles.subtitle}>
-          Ask about tasks or manage your schedule
-        </Text>
-      </View>
+  const canSend = !loading && !pendingAction && input.trim().length > 0;
+  const bottomPadding = keyboardVisible ? 8 : Math.max(insets.bottom, 8);
 
+  return (
+    <View style={styles.container}>
       <FlatList
+        ref={listRef}
         style={styles.list}
         contentContainerStyle={styles.messageList}
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View
-            style={[
-              styles.bubble,
-              item.role === "user"
-                ? styles.userBubble
-                : styles.assistantBubble,
-            ]}
-          >
-            <Text
+        onContentSizeChange={scrollToLatest}
+        onLayout={scrollToLatest}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
+        renderItem={({ item }) => {
+          const isUser = item.role === "user";
+
+          return (
+            <View
               style={[
-                styles.messageText,
-                item.role === "user" && styles.userText,
+                styles.bubble,
+                isUser ? styles.userBubble : styles.assistantBubble,
               ]}
             >
-              {item.text}
-            </Text>
-          </View>
-        )}
+              <Text
+                selectable
+                style={[styles.messageText, isUser && styles.userText]}
+              >
+                {item.text}
+              </Text>
+            </View>
+          );
+        }}
       />
 
       {loading && (
         <View style={styles.loading}>
-          <ActivityIndicator />
+          <ActivityIndicator color={SAGE_DEEP} />
           <Text style={styles.loadingText}>Thinking...</Text>
         </View>
       )}
@@ -184,95 +212,96 @@ export default function AIChatbot({
       {pendingAction && !loading && (
         <View style={styles.actionButtons}>
           <Pressable
-            style={[styles.actionButton, styles.cancelButton]}
+            style={({ pressed }) => [
+              styles.actionButton,
+              styles.cancelButton,
+              pressed && styles.pressed,
+            ]}
             onPress={cancelAction}
+            accessibilityRole="button"
           >
-            <Text style={styles.buttonText}>Cancel</Text>
+            <Text style={styles.cancelText}>Cancel</Text>
           </Pressable>
 
           <Pressable
-            style={[styles.actionButton, styles.confirmButton]}
+            style={({ pressed }) => [
+              styles.actionButton,
+              styles.confirmButton,
+              pressed && styles.pressed,
+            ]}
             onPress={confirmAction}
+            accessibilityRole="button"
           >
-            <Text style={styles.buttonText}>Confirm</Text>
+            <Text style={styles.confirmText}>Confirm</Text>
           </Pressable>
         </View>
       )}
 
-      <View style={styles.inputRow}>
+      <View style={[styles.inputRow, { paddingBottom: bottomPadding }]}>
         <TextInput
           style={styles.input}
           value={input}
           onChangeText={setInput}
           placeholder="Ask or manage your tasks..."
+          placeholderTextColor={colors.fontLight}
           multiline
           editable={!loading && !pendingAction}
-          onSubmitEditing={sendMessage}
+          // No onSubmitEditing: on a multiline input iOS inserts a new line
+          // instead, so sending is done with the button.
         />
 
         <Pressable
-          style={[
+          style={({ pressed }) => [
             styles.sendButton,
-            (loading || pendingAction || !input.trim()) &&
-              styles.disabledButton,
+            !canSend && styles.disabledButton,
+            pressed && canSend && styles.pressed,
           ]}
           onPress={sendMessage}
-          disabled={loading || !!pendingAction || !input.trim()}
+          disabled={!canSend}
+          accessibilityRole="button"
+          accessibilityLabel="Send message"
         >
-          <Text style={styles.buttonText}>Send</Text>
+          <Ionicons name="arrow-up" size={20} color="#FFFFFF" />
         </Pressable>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
-  },
-  header: {
-    padding: 18,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 13,
-    color: "#64748B",
+    backgroundColor: "#F7F3EC",
   },
   list: {
     flex: 1,
   },
   messageList: {
     padding: 16,
-    gap: 12,
+    gap: 10,
   },
   bubble: {
-    maxWidth: "88%",
-    padding: 12,
-    borderRadius: 14,
+    maxWidth: "85%",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 18,
   },
   userBubble: {
     alignSelf: "flex-end",
-    backgroundColor: colors.primary,
+    backgroundColor: SAGE_DEEP,
+    borderBottomRightRadius: 6,
   },
   assistantBubble: {
     alignSelf: "flex-start",
     backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#D8CFC0",
+    borderBottomLeftRadius: 6,
   },
   messageText: {
-    fontSize: 15,
+    fontSize: 16,
     lineHeight: 22,
-    color: "#0F172A",
+    color: colors.fontDark,
   },
   userText: {
     color: "#FFFFFF",
@@ -285,7 +314,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   loadingText: {
-    color: "#64748B",
+    color: colors.fontLight,
+    fontSize: 14,
   },
   actionButtons: {
     flexDirection: "row",
@@ -296,47 +326,67 @@ const styles = StyleSheet.create({
   actionButton: {
     flex: 1,
     alignItems: "center",
-    padding: 12,
-    borderRadius: 10,
+    justifyContent: "center",
+    minHeight: 46,
+    borderRadius: 12,
   },
   confirmButton: {
-    backgroundColor: "#15803D",
+    backgroundColor: SAGE_DEEP,
+  },
+  confirmText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
   cancelButton: {
-    backgroundColor: "#64748B",
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#B9AE9B",
   },
-  buttonText: {
-    color: "#FFFFFF",
+  cancelText: {
+    color: colors.fontDark,
+    fontSize: 16,
     fontWeight: "600",
   },
   inputRow: {
     flexDirection: "row",
     alignItems: "flex-end",
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingTop: 8,
     gap: 8,
-    backgroundColor: "#FFFFFF",
-    borderTopWidth: 1,
-    borderTopColor: "#E2E8F0",
+    backgroundColor: colors.secondary,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "#D8CFC0",
   },
   input: {
     flex: 1,
-    maxHeight: 110,
-    minHeight: 44,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#CBD5E1",
+    minHeight: 40,
+    maxHeight: 120,
+    paddingHorizontal: 14,
+    // iOS multiline inputs ignore paddingVertical on first render,
+    // so top and bottom are set explicitly.
+    paddingTop: Platform.OS === "ios" ? 10 : 8,
+    paddingBottom: Platform.OS === "ios" ? 10 : 8,
+    fontSize: 16,
+    lineHeight: 20,
+    borderRadius: 20,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#C9BFAE",
     backgroundColor: "#FFFFFF",
-    color: "#0F172A",
+    color: colors.fontDark,
   },
   sendButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-    borderRadius: 10,
-    backgroundColor: colors.primary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: SAGE_DEEP,
   },
   disabledButton: {
-    opacity: 0.45,
+    opacity: 0.4,
+  },
+  pressed: {
+    opacity: 0.7,
   },
 });

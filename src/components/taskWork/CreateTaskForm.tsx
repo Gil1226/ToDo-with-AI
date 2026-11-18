@@ -11,7 +11,15 @@ import { getTodayDate } from "@/utility/dateFormat";
 import { timeConflict } from "@/utility/timeConflict";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 type CreateTaskFormProps = {
   setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -91,7 +99,12 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
   };
 
   return (
-    <View style={styles.overlay}>
+    // The overlay itself is the keyboard-avoiding view: when the keyboard
+    // opens, the free space shrinks and the centered form moves up with it.
+    <KeyboardAvoidingView
+      style={styles.overlay}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={styles.form}>
         <View style={[styles.header, commonStyles.flexBetween]}>
           <Text style={styles.title}>New task</Text>
@@ -136,7 +149,7 @@ export function CreateTaskForm({ setShowCreateTaskForm }: CreateTaskFormProps) {
           <Text style={styles.saveText}>Save task</Text>
         </Pressable>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

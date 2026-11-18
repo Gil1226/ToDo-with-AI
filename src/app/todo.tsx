@@ -32,7 +32,7 @@ export default function todo() {
             <SegmentControl segment={segment} setSegment={setSegment}/>
             <CategoryFilter fetchedCategories={distinctCategory()} onSelectCategory={setActiveCategory}/>
             <TodayTodo activeCategory={activeCategory} setShowUpdateTaskForm={setShowUpdateTaskForm} setTask={setTask}/>
-            <UpcomingTodo setShowUpdateTaskForm={setShowUpdateTaskForm} setTask={setTask}/>
+            <UpcomingTodo activeCategory={activeCategory} setShowUpdateTaskForm={setShowUpdateTaskForm} setTask={setTask}/>
           </ScrollView>
           :
           <ScrollView>

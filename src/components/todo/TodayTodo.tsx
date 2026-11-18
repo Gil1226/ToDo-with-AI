@@ -7,6 +7,7 @@ import { Task } from "@/types/taskType";
 import { useTodayTasks } from "@/context/taskContext";
 import { handleDeleteTask } from "@/utility/deleteFunction";
 import { handleEditTask } from "@/utility/updateFunction";
+import AllTasksModal from "./AllTaskModal";
 
 type props = {
   activeCategory: string
@@ -49,20 +50,16 @@ export default function TodayTodo({activeCategory, setShowUpdateTaskForm, setTas
           </View>
       </ScrollView>
 
-      <Modal visible={showAllToday} onRequestClose={() => setShowAllToday(false)} animationType="slide">
-        <View style={style.modalContainer}>
-          <View style={commonStyles.cardHeaderLayout}>
-            <Text>All Tasks</Text>
-
-            <Pressable onPress={() => setShowAllToday(false)}>
-              <Text>Close</Text>
-            </Pressable>
-          </View>
-          <ScrollView>
-            <TaskList emptyMessage="No task today, Enjoy your rest!" allTask={todayTasks} onEditTask={(task) => handleEditTask({ task, setShowUpdateTaskForm, setTask })} onDeleteTask={(task) => handleDeleteTask({ task, refresh:updateTodayTask })} />
-          </ScrollView>
-        </View>
-      </Modal>
+      <AllTasksModal
+        visible={showAllToday}
+        onClose={() => setShowAllToday(false)}
+        title="All Today tasks"
+        emptyMessage="No more today task"
+        tasks={filteredTasks}
+        activeCategory={activeCategory}
+        onEditTask={(task) => handleEditTask({ task, setShowUpdateTaskForm, setTask })}
+        onDeleteTask={(task) => handleDeleteTask({ task, refresh: updateTodayTask })}
+      />
 
     </>
     

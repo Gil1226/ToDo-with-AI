@@ -1,23 +1,26 @@
 import {
   Modal,
   View,
+  Text,
   Pressable,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/styles/colors";
 import AIChatbot from "../taskWork/aiAssistant/aiChatbot";
 import { useTodayTasks, useUpcomingTasks } from "@/context/taskContext";
+import { updateCompleted } from "@/database/taskFunction";
 
 type Props = {
   visible: boolean;
   onClose: () => void;
 };
 
-export default function AIChatbotModal({
-  visible,
-  onClose,
-}: Props) {
+function ChatSheet({ onClose }: { onClose: () => void }) {
+  const insets = useSafeAreaInsets();
   const { updateTodayTask } = useTodayTasks();
   const { updateUpcomingTask } = useUpcomingTasks();
 
@@ -25,30 +28,50 @@ export default function AIChatbotModal({
     updateTodayTask();
     updateUpcomingTask();
   }
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <View style={styles.headerText}>
+          <Text style={styles.title}>AI Todo Assistant</Text>
+          <Text style={styles.subtitle}>
+            Ask about tasks or manage your schedule
+          </Text>
+        </View>
+
+        <Pressable
+          onPress={onClose}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Close AI assistant"
+          style={({ pressed }) => pressed && styles.pressed}
+        >
+          <Ionicons
+            name="close-circle"
+            size={30}
+            color={colors.primary}
+          />
+        </Pressable>
+      </View>
+
+      <AIChatbot onTasksChanged={handleTasksChanged} />
+    </KeyboardAvoidingView>
+  );
+}
+
+export default function AIChatbotModal({ visible, onClose }: Props) {
   return (
     <Modal
       visible={visible}
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable
-            onPress={onClose}
-            accessibilityLabel="Close AI assistant"
-          >
-            <Ionicons
-              name="close-circle-outline"
-              size={30}
-              color={colors.primary}
-            />
-          </Pressable>
-        </View>
-
-        <View style={styles.chat}>
-          <AIChatbot onTasksChanged={handleTasksChanged}/>
-        </View>
-      </View>
+      <SafeAreaProvider>
+        <ChatSheet onClose={onClose} />
+      </SafeAreaProvider>
     </Modal>
   );
 }
@@ -56,17 +79,33 @@ export default function AIChatbotModal({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#F7F3EC",
   },
   header: {
-    height: 55,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
-    alignItems: "flex-end",
-    justifyContent: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    paddingBottom: 12,
+    backgroundColor: colors.secondary,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#D8CFC0",
   },
-  chat: {
+  headerText: {
     flex: 1,
+    paddingRight: 12,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: colors.fontDark,
+  },
+  subtitle: {
+    marginTop: 2,
+    fontSize: 13,
+    color: colors.fontLight,
+  },
+  pressed: {
+    opacity: 0.6,
   },
 });
